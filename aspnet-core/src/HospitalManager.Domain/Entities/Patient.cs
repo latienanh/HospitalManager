@@ -8,7 +8,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace HospitalManager.Entities
 {
-    public class Patient : BaseEntity<int>
+    public sealed class Patient : BaseEntity<int>
     {
         public int ProvinceCode { get; set; }
         public int DistrictCode { get; set; }

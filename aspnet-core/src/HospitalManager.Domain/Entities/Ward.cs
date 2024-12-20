@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace HospitalManager.Entities
 {
-    public class Ward : CommonAdministrative
+    public sealed class Ward : CommonAdministrative
     {
         public string Note { get; set; }
 

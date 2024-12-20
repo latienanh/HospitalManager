@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace HospitalManager.Entities
 {
-    public class District : CommonAdministrative
+    public sealed class District : CommonAdministrative
     {
         public int ProvinceCode { get; set; }
         public string Note { get; set; }
