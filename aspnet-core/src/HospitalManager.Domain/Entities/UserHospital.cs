@@ -8,7 +8,7 @@ using Volo.Abp.Identity;
 
 namespace HospitalManager.Entities
 {
-    public sealed class UserHospital : AuditedAggregateRoot<int>
+    public sealed class UserHospital : FullAuditedAggregateRoot<int>
     {
         public Guid UserId { get; set; }
         public int HospitalId { get; set; }

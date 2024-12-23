@@ -3,6 +3,7 @@ using System;
 using HospitalManager.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace HospitalManager.Migrations
 {
     [DbContext(typeof(HospitalManagerDbContext))]
-    partial class HospitalManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241223070550_update-delete")]
+    partial class updatedelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +96,6 @@ namespace HospitalManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.ToTable("Districts");
                 });
 
@@ -170,9 +170,6 @@ namespace HospitalManager.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("Hospitals");
                 });
@@ -252,9 +249,6 @@ namespace HospitalManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.ToTable("Patients");
                 });
 
@@ -326,9 +320,6 @@ namespace HospitalManager.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("Provinces");
                 });
@@ -466,9 +457,6 @@ namespace HospitalManager.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("Wards");
                 });

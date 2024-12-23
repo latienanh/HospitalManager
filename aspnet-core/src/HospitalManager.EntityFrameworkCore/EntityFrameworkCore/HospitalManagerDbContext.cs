@@ -108,15 +108,31 @@ public class HospitalManagerDbContext :
             .Property(x => x.Code)
             .IsRequired()
             .IsUnicode();
+        builder.Entity<Province>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
 
         builder.Entity<District>()
             .Property(x => x.Code)
             .IsRequired()
             .IsUnicode();
+        builder.Entity<District>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
 
         builder.Entity<Ward>()
             .Property(x => x.Code)
             .IsRequired()
             .IsUnicode();
+        builder.Entity<Ward>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
+
+        builder.Entity<Patient>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
+        builder.Entity<Hospital>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
     }
 }

@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace HospitalManager.Entities.Common
 {
-    public class BaseEntity<T> : AuditedAggregateRoot<int>
+    public class BaseEntity<T> : FullAuditedAggregateRoot<int>
     {
         [Required]
         [MaxLength(10)]

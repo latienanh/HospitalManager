@@ -9,8 +9,8 @@ namespace HospitalManager.Dtos.Common
 {
     public class BaseDto<T> : AuditedEntityDto<int>
     {
-        public T Code;
+        public T Code { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
     }
 }
