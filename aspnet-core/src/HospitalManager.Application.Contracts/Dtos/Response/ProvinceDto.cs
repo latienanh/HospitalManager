@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using HospitalManager.Dtos.Common;
 using Volo.Abp.Application.Dtos;
 
-namespace HospitalManager.Dtos
+namespace HospitalManager.Dtos.Response;
+
+public class ProvinceDto : CommonAdministrativeDto
 {
-    public class ProvinceDto : CommonAdministrativeDto
-    {
-        public string Note;
-    }
+       
 }

@@ -11,80 +11,76 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories.Dapper;
 using Volo.Abp.EntityFrameworkCore;
 
-namespace HospitalManager.Repositories.Dapper
+namespace HospitalManager.Repositories.Dapper;
+
+public class ProvinceDapperRepository(IDbContextProvider<HospitalManagerDbContext> dbContextProvider)
+    : BaseDapperRepository(dbContextProvider), IProvinceDapperRepository, IScopedDependency
 {
-    public class ProvinceDapperRepository : BaseDapperRepository, IProvinceDapperRepository, IScopedDependency
+    public async Task<List<Province>> GetPagingAsync(int skip, int take, string? additionalConditions = "")
     {
-        public ProvinceDapperRepository(IDbContextProvider<HospitalManagerDbContext> dbContextProvider)
-            : base(dbContextProvider)
+        try
         {
-        }
-        public async Task<List<Province>> GetProvinceDapperList(int skip, int take, string? additionalConditions = "")
-        {
-            try
-            {
-                var dbConnection = await GetDbConnectionAsync();
-                var tableName = "provinces";
-                // Bước 1: Tạo câu truy vấn cơ bản lấy danh sách các cột
-                var baseQuery = BuildBaseSelectQuery(tableName);
+            var dbConnection = await GetDbConnectionAsync();
+            var tableName = "provinces";
+            // Bước 1: Tạo câu truy vấn cơ bản lấy danh sách các cột
+            var baseQuery = BuildBaseSelectQuery(tableName);
 
-                // Bước 2: Xây dựng phần SELECT thực tế với điều kiện phân trang
-                var paginationQuery = BuildPaginationQuery(skip, take);
+            // Bước 2: Xây dựng phần SELECT thực tế với điều kiện phân trang
+            var paginationQuery = BuildPaginationQuery(skip, take);
 
-                // Bước 3: Cộng thêm các điều kiện vào câu truy vấn (nếu có)
-                var finalQuery = $@"
+            // Bước 3: Cộng thêm các điều kiện vào câu truy vấn (nếu có)
+            var finalQuery = $@"
                 {baseQuery}
                 SET @sql = CONCAT('SELECT ', @sql, ' FROM {tableName} ', '{additionalConditions} ', '{paginationQuery}');
                 PREPARE stmt FROM @sql;
                 EXECUTE stmt;
                 DEALLOCATE PREPARE stmt;";
 
-                var provinces = await dbConnection.QueryAsync<Province>(
-                    finalQuery,
-                    transaction: await GetDbTransactionAsync()
-                );
+            var provinces = await dbConnection.QueryAsync<Province>(
+                finalQuery,
+                transaction: await GetDbTransactionAsync()
+            );
 
-                return provinces.ToList();
-            }
-            catch (Exception ex)
-            {
-                // Ghi lại thông tin lỗi chi tiết
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
-                throw;
-            }
+            return provinces.ToList();
         }
-
-        public async Task<int> GetCountTask(int take,string? additionalConditions = "")
+        catch (Exception ex)
         {
-            try
-            {
-                var dbConnection = await GetDbConnectionAsync();
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
 
-           
-                additionalConditions = additionalConditions?.Replace("'", "''");
+    public async Task<int> GetCountAsync(int take, string? additionalConditions = "")
+    {
+        try
+        {
+            var dbConnection = await GetDbConnectionAsync();
 
-     
-                var query = $@"
+
+            additionalConditions = additionalConditions?.Replace("'", "''");
+
+
+            var query = $@"
                     SELECT COUNT(*)
                     FROM provinces
                     WHERE IsDeleted = FALSE
                     {additionalConditions}";
 
-                var count = await dbConnection.ExecuteScalarAsync<int>(
-                    query,
-                    transaction: await GetDbTransactionAsync()
-                );
-                var result = (int)Math.Ceiling((decimal)count / take);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                // Ghi lại thông tin lỗi chi tiết
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
-                throw;
-            }
+            var count = await dbConnection.ExecuteScalarAsync<int>(
+                query,
+                transaction: await GetDbTransactionAsync()
+            );
+            var result = (int)Math.Ceiling((decimal)count / take);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
         }
     }
 }

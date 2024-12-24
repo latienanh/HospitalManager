@@ -111,7 +111,8 @@
                 "bundleName": "ngx-datatable-material"
               },
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
             ],
             "scripts": []
           },

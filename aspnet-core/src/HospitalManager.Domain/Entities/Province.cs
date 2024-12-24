@@ -7,10 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace HospitalManager.Entities
-{
-    public sealed class Province : CommonAdministrative
-    {    
-        public string Note { get; set; }
-    }
+namespace HospitalManager.Entities;
+
+public sealed class Province : CommonAdministrative
+{    
+    public string Note { get; set; }
 }

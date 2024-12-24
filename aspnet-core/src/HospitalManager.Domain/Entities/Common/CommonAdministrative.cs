@@ -6,12 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace HospitalManager.Entities.Common
+namespace HospitalManager.Entities.Common;
+
+public class CommonAdministrative : BaseEntity<int>
 {
-    public class CommonAdministrative : BaseEntity<int>
-    {
-        [Required]
-        [MaxLength(30)]
-        public string AdministrativeLevel { get; set; }
-    }
+    [Required] [MaxLength(30)] public string AdministrativeLevel { get; set; } = string.Empty;
 }

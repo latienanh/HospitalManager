@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.Domain.Repositories;
 
-public class ExcelService(IRepository<Province, int> repository) : IScopedDependency
+public class ExcelService : IScopedDependency 
 {
     public List<Province> GetSampleData()
     {
@@ -68,10 +70,18 @@ public class ExcelService(IRepository<Province, int> repository) : IScopedDepend
         }
     }
 
-    public async Task ImportExcelFileAsync(Stream fileStream,bool isUpdate)
+    public async Task ImportExcelFileAsync<T>(
+        Stream fileStream,
+        bool isUpdate,
+        Func<ExcelWorksheet,int, T> mapRowToEntity,
+        Func<int, Task<T>> findExistingEntity,  
+        Func<IEnumerable<T>, Task> insertEntity,
+        Func<IEnumerable<T>, Task> updateEntity ,
+        Func<T,ExcelWorksheet, int, T> mapRowToEntityUpdate) where T : FullAuditedAggregateRoot<int>
+
     {
-        var provinces = new List<Province>();
-        var provincesUpdate = new List<Province>();
+        var entitiesToAdd = new List<T>();
+        var entitiesToUpdate = new List<T>();
 
         try
         {
@@ -85,33 +95,34 @@ public class ExcelService(IRepository<Province, int> repository) : IScopedDepend
                     var code = int.Parse(worksheet.Cells[row, 1].Text);
 
                     // Check if the province code already exists in the database
-                    var existingProvince = await repository.FindAsync(p => p.Code == code);
-                    if (existingProvince != null)
+                    var existinEntity = await findExistingEntity(code);
+                    if (existinEntity != null)
                     {
-                        if(!isUpdate)
-                        // Skip adding this province to the list if it already exists
+                        if (isUpdate)
+                        {
+                            var entityUpdate = mapRowToEntityUpdate(existinEntity,worksheet,row);
+                            entitiesToUpdate.Add(entityUpdate);
+                        }
+                        
                         continue;
-                        provincesUpdate.Add(existingProvince);
-
                     }
 
-                    var province = new Province
-                    {
-                        Code = code,
-                        Name = worksheet.Cells[row, 2].Text,
-                        AdministrativeLevel = worksheet.Cells[row, 4].Text,
-                        Note = ""
-                    };
+                    var entity = mapRowToEntity(worksheet, row);
 
 
-                    provinces.Add(province);
+                    entitiesToAdd.Add(entity);
                 }
             }
 
-            if (provinces.Any())
+            if (entitiesToAdd.Any())
             {
-                await repository.InsertManyAsync(provinces, true);
-                await repository.UpdateManyAsync(provincesUpdate,true);
+                await insertEntity(entitiesToAdd);
+
+            }
+
+            if (isUpdate&&entitiesToUpdate.Any())
+            {
+                await updateEntity(entitiesToUpdate);
             }
         }
         catch (Exception ex)
@@ -121,5 +132,7 @@ public class ExcelService(IRepository<Province, int> repository) : IScopedDepend
             throw new Exception("An error occurred while importing the Excel file.", ex);
         }
     }
+
+   
 
 }

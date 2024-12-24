@@ -7,11 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace HospitalManager.Entities
+namespace HospitalManager.Entities;
+
+public sealed class District : CommonAdministrative
 {
-    public sealed class District : CommonAdministrative
-    {
-        public int ProvinceCode { get; set; }
-        public string Note { get; set; }
-    }
+    public int ProvinceCode { get; set; }
+    public string Note { get; set; } = string.Empty;
 }

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.Identity;
 
-namespace HospitalManager.Entities
+namespace HospitalManager.Entities;
+
+public sealed class UserHospital : FullAuditedAggregateRoot<int>
 {
-    public sealed class UserHospital : FullAuditedAggregateRoot<int>
-    {
-        public Guid UserId { get; set; }
-        public int HospitalId { get; set; }
-    }
+    public Guid UserId { get; set; }
+    public int HospitalId { get; set; }
 }

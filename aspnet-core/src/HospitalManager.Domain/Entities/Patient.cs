@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using HospitalManager.Entities.Common;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace HospitalManager.Entities
+namespace HospitalManager.Entities;
+
+public sealed class Patient : BaseEntity<int>
 {
-    public sealed class Patient : BaseEntity<int>
-    {
-        public int ProvinceCode { get; set; }
-        public int DistrictCode { get; set; }
-        public int WardCode { get; set; }
-        public string Address { get; set; }
-        public int HospitalId { get; set; }
-    }
+    public int ProvinceCode { get; set; }
+    public int DistrictCode { get; set; }
+    public int WardCode { get; set; }
+    public string Address { get; set; }
+    public int HospitalId { get; set; }
 }

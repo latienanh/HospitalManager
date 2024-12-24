@@ -15,6 +15,19 @@ function configureRoutes(routesService: RoutesService) {
         order: 1,
         layout: eLayoutType.application,
       },
+      {
+        path: '/province-test',
+        name: '::Menu:Administrative',
+        iconClass: 'fas fa-book',
+        order: 2,
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/provinces',
+        name: '::Menu:Administrative2',
+        parentName: '::Menu:Administrative',
+        layout: eLayoutType.application,
+      },
     ]);
   };
 }
