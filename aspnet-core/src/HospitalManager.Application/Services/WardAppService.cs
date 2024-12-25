@@ -38,7 +38,7 @@ public class WardAppService(
     {
         var Wards = await WardDapperRepository.GetPagingAsync(request.Index, request.Size,
             $"WHERE ProvinceCode ={request.ProvinceCode} and DistrictCode = {request.DistrictCode} and IsDeleted =FALSE");
-        var totalPage = await WardDapperRepository.GetCountAsync(request.Size);
+        var totalPage = await WardDapperRepository.GetCountAsync(request.Size, $"and ProvinceCode = {request.ProvinceCode} and DistrictCode = {request.DistrictCode}");
         var mappedWards = ObjectMapper.Map<List<Ward>, List<WardDto>>(Wards);
         var result = new GetPagingResponse<WardDto>
         {

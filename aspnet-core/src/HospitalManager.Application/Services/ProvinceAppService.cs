@@ -48,7 +48,7 @@ public class ProvinceAppService(
 
     public override async Task<ProvinceDto> CreateAsync(CreateUpdateProvinceDto input)
     {
-        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+       var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
         if (checkCode != null)
         {
             throw new BusinessException()

@@ -1,0 +1,125 @@
+<div>
+  <button nz-button nzType="primary" (click)="onAdd()">Thêm mới tỉnh</button>
+  <app-add-province [isVisibleAddProvince]="isVisibleAddProvince" (visibilityChange)="handleVisibilityChange($event)">
+  </app-add-province>
+  
+  <button nz-button nzType="default" (click)="onExport()">Nhập Tỉnh</button>
+  <app-import-province-excel [isVisibleAddProvince]="isVisibleAddProvince" (visibilityChange)="handleVisibilityChange($event)">
+
+  </app-import-province-excel>
+</div>
+
+<nz-table #nestedTable [nzData]="provinces.items" [nzTotal]="pageSize * provinces.totalCount"
+  [nzPageIndex]="currentPage" (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false"
+  [nzTitle]="'Danh sách tỉnh và thành phố'">
+
+  <thead>
+    <tr>
+      <th></th>
+      <th>Mã</th>
+      <th>Tên</th>
+      <th>Cấp</th>
+      <th>Thời gian tạo</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let data of provinces.items; trackBy: trackById">
+      <tr>
+        <td [(nzExpand)]="data.expand" (nzExpandChange)="onExpandChangeProvince($event, data)"></td>
+        <td>{{ data.code }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.administrativeLevel }}</td>
+        <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+        <td>
+          <a>Xoá</a>
+          <a>Sửa</a>
+        </td>
+      </tr>
+      <tr [nzExpand]="data.expand">
+        <div>
+          <button nz-button nzType="primary" (click)="onAdd()">Thêm mới huyện</button>
+          <button nz-button nzType="default" (click)="onExport()">Export</button>
+          <nz-modal [(nzVisible)]="isVisible2" nzTitle="The 2 Modal" (nzOnCancel)="handleCancel1()"
+            (nzOnOk)="handleOk1()">
+            <ng-container *nzModalContent>
+              <p>Content one</p>
+              <p>Content two</p>
+              <p>Content three</p>
+            </ng-container>
+          </nz-modal>
+        </div>
+        <ng-container *ngIf="data.districts">
+          <nz-table #innerTable [nzData]="data.districts.items" nzSize="middle" [nzShowPagination]="false">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Mã</th>
+                <th>Tên</th>
+                <th>Cấp</th>
+                <th>Thời gian tạo</th>
+                <th>Mã tỉnh</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let innerData of innerTable.data; trackBy: trackById">
+                <tr>
+                  <td [(nzExpand)]="innerData.expand" (nzExpandChange)="onExpandChangeDistrict($event, data)"></td>
+                  <td>{{ innerData.code }}</td>
+                  <td>{{ innerData.name }}</td>
+                  <td>{{ innerData.administrativeLevel }}</td>
+                  <td>{{ innerData.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+                  <td>{{ innerData.provinceCode }}</td>
+                  <td>
+                    <a>Xoá</a>
+                    <a>Sửa</a>
+                  </td>
+                </tr>
+                <tr [nzExpand]="innerData.expand">
+                  <div>
+                    <button nz-button nzType="primary" (click)="onAdd()">Thêm mới xã</button>
+                    <button nz-button nzType="default" (click)="onExport()">Export</button>
+                    <nz-modal [(nzVisible)]="isVisible2" nzTitle="The 2 Modal" (nzOnCancel)="handleCancel1()"
+                      (nzOnOk)="handleOk1()">
+                      <ng-container *nzModalContent>
+                        <p>Content one</p>
+                        <p>Content two</p>
+                        <p>Content three</p>
+                      </ng-container>
+                    </nz-modal>
+                  </div>
+                  <ng-container *ngIf="innerData.wards">
+                    <nz-table #wardTable [nzData]="innerData.wards.items" nzSize="middle" [nzShowPagination]="false">
+                      <thead>
+                        <tr>
+                          <th>Mã</th>
+                          <th>Tên</th>
+                          <th>Cấp</th>
+                          <th>Thời gian tạo</th>
+                          <th>Hành động</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let wardData of wardTable.data; trackBy: trackById">
+                          <td>{{ wardData.code }}</td>
+                          <td>{{ wardData.name }}</td>
+                          <td>{{ wardData.administrativeLevel }}</td>
+                          <td>{{ wardData.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+                          <td>
+                            <a>Xoá</a>
+                            <a>Sửa</a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </nz-table>
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
+        </ng-container>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

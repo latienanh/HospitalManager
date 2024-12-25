@@ -17,6 +17,9 @@ import { AbpOAuthModule } from '@abp/ng.oauth';
 import { ThemeLeptonXModule } from '@abp/ng.theme.lepton-x';
 import { SideMenuLayoutModule } from '@abp/ng.theme.lepton-x/layouts';
 import { AccountLayoutModule } from '@abp/ng.theme.lepton-x/account';
+import { AdministrativeModule } from './features/administrative/administrative.module';
+import { HospitalModule } from './features/hospital/hospital.module';
+import { PatientModule } from './features/patient/patient.module';
 @NgModule({
   imports: [
     BrowserModule,
@@ -27,19 +30,24 @@ import { AccountLayoutModule } from '@abp/ng.theme.lepton-x/account';
       registerLocaleFn: registerLocale(),
     }),
     AbpOAuthModule.forRoot(),
-    ThemeSharedModule.forRoot(),
-    
+    ThemeSharedModule.forRoot({
+      httpErrorConfig: {
+        skipHandledErrorCodes: [403],
+      }
+    }),
+
     AccountConfigModule.forRoot(),
     IdentityConfigModule.forRoot(),
     TenantManagementConfigModule.forRoot(),
     SettingManagementConfigModule.forRoot(),
-    
-    
+
     FeatureManagementModule.forRoot(),
-              ThemeLeptonXModule.forRoot(),
-              SideMenuLayoutModule.forRoot(),
-              AccountLayoutModule.forRoot(),
-    
+    ThemeLeptonXModule.forRoot(),
+    SideMenuLayoutModule.forRoot(),
+    AccountLayoutModule.forRoot(),
+    AdministrativeModule,
+    HospitalModule,
+    PatientModule,
   ],
   declarations: [AppComponent],
   providers: [APP_ROUTE_PROVIDER],

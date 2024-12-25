@@ -7,4 +7,4 @@ export interface IFormFile {
   name?: string;
   fileName?: string;
 }
-type StringValues = string | string[];
+type StringValues = Record<string, string>;

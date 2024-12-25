@@ -37,7 +37,7 @@ public class DistrictAppService(IRepository<District, int> repository,
     public async Task<GetPagingResponse<DistrictDto>> GetDistrictDapperListAsync([FromBody] GetPagingDistrictRequest request)
     {
         var districts = await districtDapperRepository.GetPagingAsync(request.Index, request.Size, $"WHERE ProvinceCode = {request.ProvinceCode} and IsDeleted =FALSE");
-        var totalPage = await districtDapperRepository.GetCountAsync(request.Size);
+        var totalPage = await districtDapperRepository.GetCountAsync(request.Size,$"and ProvinceCode = {request.ProvinceCode}");
         var mappedDistricts = ObjectMapper.Map<List<District>, List<DistrictDto>>(districts);
         var result = new GetPagingResponse<DistrictDto>
         {

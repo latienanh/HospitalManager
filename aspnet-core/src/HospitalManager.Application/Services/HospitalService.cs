@@ -49,7 +49,7 @@ namespace HospitalManager.Services
             if (checkCode != null)
             {
                 throw new BusinessException()
-                    .WithData("message", $"Mã: {input.Code} đã tồn tại trong hệ thống");
+                    .WithData("message","helo");
             }
             return await base.CreateAsync(input);
         }

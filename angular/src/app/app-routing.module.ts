@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
+    loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule),
   },
   {
     path: 'account',
@@ -25,7 +25,9 @@ const routes: Routes = [
     loadChildren: () =>
       import('@abp/ng.setting-management').then(m => m.SettingManagementModule.forLazy()),
   },
-  { path: 'provinces', loadChildren: () => import('./province/province.module').then(m => m.ProvinceModule) },
+  { path: 'administratives', loadChildren: () => import('./features/administrative/administrative.module').then(m => m.AdministrativeModule) },
+  { path: 'hospitals', loadChildren: () => import('./features/hospital/hospital.module').then(m => m.HospitalModule) },
+  { path: 'parients', loadChildren: () => import('./features/patient/patient.module').then(m => m.PatientModule) },
 ];
 
 @NgModule({

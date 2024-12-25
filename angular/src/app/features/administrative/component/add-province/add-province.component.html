@@ -1,0 +1,30 @@
+<nz-modal [(nzVisible)]="isVisibleAddProvince.showAddProvinceForm" nzTitle="Thêm tỉnh" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="provinceAddForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="code">Mã</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid CODE!">
+          <input nz-input formControlName="code" id="code" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Tên</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your name!">
+          <input nz-input id="name" formControlName="name" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="administrativeLevel" nzRequired>Cấp</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your name!">
+          <input nz-input formControlName="administrativeLevel" id="administrativeLevel" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="note" nzRequired>Ghi chú</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your name!">
+          <input nz-input formControlName="note" id="note" />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

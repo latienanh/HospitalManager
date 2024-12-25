@@ -7,4 +7,5 @@ namespace HospitalManager.Dtos.Response;
 
 public class DistrictDto : CommonAdministrativeDto
 {
+    public int ProvinceCode { get; set; } 
 }

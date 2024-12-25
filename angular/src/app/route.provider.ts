@@ -16,16 +16,24 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application,
       },
       {
-        path: '/province-test',
+        path: '/administratives',
         name: '::Menu:Administrative',
         iconClass: 'fas fa-book',
         order: 2,
         layout: eLayoutType.application,
       },
       {
-        path: '/provinces',
-        name: '::Menu:Administrative2',
-        parentName: '::Menu:Administrative',
+        path: '/hospitals',
+        name: '::Menu:Hospital',
+        iconClass: 'fas fa-hospital',
+        order: 3,
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/parients',
+        name: '::Menu:Patient',
+        iconClass: 'fas fa-hospital-user',
+        order: 4,
         layout: eLayoutType.application,
       },
     ]);

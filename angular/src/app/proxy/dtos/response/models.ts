@@ -14,6 +14,7 @@ export interface PatientDto extends BaseDto<number> {
 }
 
 export interface DistrictDto extends CommonAdministrativeDto {
+  provinceCode: number;
 }
 
 export interface HospitalDto extends BaseDto<number> {
