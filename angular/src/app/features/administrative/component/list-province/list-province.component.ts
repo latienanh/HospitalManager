@@ -4,6 +4,7 @@ import { BaseGetPagingRequest } from '@proxy/dtos/common';
 import { DistrictDto, GetPagingResponse, ProvinceDto, WardDto } from '@proxy/dtos/response';
 import { ProvinceService } from '@proxy/services';
 import { VisibleAddProvince, VisibleImportProvince } from '../../models/visibleaddprovince';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-list-province',
@@ -28,7 +29,7 @@ export class ListProvinceComponent {
   currentPage: number = 1;
   pageSize: number = 10;
 
-  constructor(private provinceService: ProvinceService) {}
+  constructor(private provinceService: ProvinceService,private notification:NzNotificationService) {}
 
   ngOnInit() {
     this.loadProvinces();
@@ -95,10 +96,20 @@ export class ListProvinceComponent {
   onExport() {
     this.isVisibleImportProvince.showImportProvinceForm = true;
   }
-  onDelete(){
-
+  onDelete(id:number){
+    this.provinceService.delete(id).subscribe(
+      {
+        next:(response)=>{
+          this.notification.success('Thành công', `Xoá thành công ${response}`);
+          this.loadProvinces();
+        },
+        error:(error)=>{
+          this.notification.success('Thất bại', `Xoá thất bại ${error}`);
+        }
+      }
+    )
   }
   onEdit(){
-    
+    this.isVisibleAddProvince.showAddProvinceForm = true;
   }
 }

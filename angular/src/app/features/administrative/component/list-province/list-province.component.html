@@ -30,7 +30,7 @@
         <td>{{ data.administrativeLevel }}</td>
         <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
         <td>
-          <button nz-button nzType="default" (click)="onDelete()">
+          <button nz-button nzType="default" (click)="onDelete(data.id)">
             Xoá
           </button>
           <button nz-button nzType="default" (click)="onEdit()">

@@ -11,15 +11,7 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="file" nzRequired>Tải lên tệp</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
-          <nz-upload 
-            [nzBeforeUpload]="beforeUpload" 
-            [nzFileList]="fileList" 
-            [nzMultiple]="false" 
-            nzLimit="1">
-            <button nz-button type="button">
-              <i nz-icon nzType="upload"></i> Chọn tệp
-            </button>
-          </nz-upload>
+          <input type="file" (change)="onFileChange($event)" />
         </nz-form-control>
       </nz-form-item>
 
@@ -27,10 +19,9 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isUpdate" nzRequired>Đồng ý cập nhật</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
-          <label nz-checkbox formControlName="isUpdate">Đồng ý với các điều khoản</label>
+          <label nz-checkbox formControlName="isUpdate">Bạn có muốn cập nhật lại dữ liệu khi trùng mã hay không</label>
         </nz-form-control>
       </nz-form-item>
     </form>
   </ng-container>
 </nz-modal>
-
