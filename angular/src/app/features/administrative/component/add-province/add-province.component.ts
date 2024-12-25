@@ -1,12 +1,11 @@
-import { ListService } from '@abp/ng.core';
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import {
   NonNullableFormBuilder,
   Validators
 } from '@angular/forms';
 import { ProvinceService } from '@proxy/services';
-import { Subject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Subject } from 'rxjs';
 import { ErrorResponse } from '../../../../core/models/error-response.model';
 import { VisibleAddProvince } from '../../models/visibleaddprovince';
 @Component({
@@ -31,7 +30,6 @@ export class AddProvinceComponent implements OnDestroy {
 
   constructor(
     private fb: NonNullableFormBuilder,
-    public readonly list: ListService,
     private provinceService: ProvinceService,
     private notification: NzNotificationService
   ) {}

@@ -1,18 +1,36 @@
-<nz-modal [(nzVisible)]="isVisibleAddProvince.showImportProvinceForm" nzTitle="Thêm tỉnh" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+<nz-modal 
+  [(nzVisible)]="isVisibleImportProvince.showImportProvinceForm" 
+  nzTitle="Thêm tỉnh" 
+  (nzOnCancel)="handleCancel()" 
+  [nzOkText]="'Xác nhận'"
+  [nzCancelText]="'Hủy'"
+  (nzOnOk)="submitForm()">
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="provinceAddForm" (ngSubmit)="submitForm()">
+    <form nz-form [formGroup]="provinceImportForm">
+      <!-- File Upload -->
       <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="code">Mã</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid CODE!">
-          <input nz-input formControlName="code" id="code" />
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="file" nzRequired>Tải lên tệp</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <nz-upload 
+            [nzBeforeUpload]="beforeUpload" 
+            [nzFileList]="fileList" 
+            [nzMultiple]="false" 
+            nzLimit="1">
+            <button nz-button type="button">
+              <i nz-icon nzType="upload"></i> Chọn tệp
+            </button>
+          </nz-upload>
         </nz-form-control>
       </nz-form-item>
+
+      <!-- Checkbox -->
       <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Tên</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your name!">
-          <input nz-input id="name" formControlName="name" />
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isUpdate" nzRequired>Đồng ý cập nhật</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <label nz-checkbox formControlName="isUpdate">Đồng ý với các điều khoản</label>
         </nz-form-control>
       </nz-form-item>
     </form>
   </ng-container>
 </nz-modal>
+

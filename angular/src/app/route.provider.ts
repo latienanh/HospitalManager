@@ -23,6 +23,24 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application,
       },
       {
+        path: '/provinces',
+        name: '::Menu:Province',
+        parentName: '::Menu:Administrative',
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/districts',
+        name: '::Menu:District',
+        parentName: '::Menu:Administrative',
+        layout: eLayoutType.application,
+      },
+      {
+        path: '/wards',
+        name: '::Menu:Ward',
+        parentName: '::Menu:Administrative',
+        layout: eLayoutType.application,
+      },
+      {
         path: '/hospitals',
         name: '::Menu:Hospital',
         iconClass: 'fas fa-hospital',
@@ -36,6 +54,7 @@ function configureRoutes(routesService: RoutesService) {
         order: 4,
         layout: eLayoutType.application,
       },
+    
     ]);
   };
 }
