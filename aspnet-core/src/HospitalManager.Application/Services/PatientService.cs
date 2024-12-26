@@ -102,5 +102,13 @@ namespace PatientManager.Services
             }
             return await base.UpdateAsync(id, input);
         }
+        public async Task<List<Patient>> Test()
+        {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+            var newPatientsByHospital =
+                await repository.GetListAsync(x => x.CreationTime >= today && x.CreationTime <= tomorrow);
+            return newPatientsByHospital;
+        }
     }
 }

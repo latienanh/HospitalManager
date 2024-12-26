@@ -12,18 +12,22 @@ using HospitalManager.Dtos.Common;
 using HospitalManager.Dtos.Request.CreateUpdate;
 using HospitalManager.Dtos.Request.GetPaging;
 using HospitalManager.Dtos.Response;
+using JetBrains.Annotations;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.ObjectMapping;
 using OfficeOpenXml;
+using Quartz.Job;
+using Volo.Abp.Emailing;
 
 namespace HospitalManager.Services;
 
 public class DistrictAppService(IRepository<District, int> repository,
     IDistrictDapperRepository districtDapperRepository,
-    ExcelService excelService
+    ExcelService excelService,
+    IEmailSender emailSender
 )
     : CrudAppService<District, DistrictDto, int, PagedAndSortedResultRequestDto, CreateUpdateDistrictDto>(
         repository), IDistrictService
@@ -135,5 +139,9 @@ public class DistrictAppService(IRepository<District, int> repository,
         }
 
         return true;
+
+       
+        
     }
+
 }
