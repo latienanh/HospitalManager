@@ -1,0 +1,33 @@
+<nz-modal [(nzVisible)]="isVisibleUpdateProvince.showUpdateForm" nzTitle="Cập nhật tỉnh" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="provinceUpdateForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="code">Mã</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Mã không hợp lệ!">
+          <input nz-input formControlName="code" id="code" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Tên</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập tên!">
+          <input nz-input id="name" formControlName="name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="administrativeLevel" nzRequired>Cấp</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập cấp!">
+          <input nz-input formControlName="administrativeLevel" id="administrativeLevel" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="note" nzRequired>Ghi chú</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập ghi chú!">
+          <input nz-input formControlName="note" id="note" />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

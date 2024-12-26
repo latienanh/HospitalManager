@@ -13,6 +13,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 
 namespace HospitalManager.Services
@@ -37,6 +38,19 @@ namespace HospitalManager.Services
             };
             return result;
         }
+        [HttpPost]
+        public async Task<GetPagingResponse<UserDto>> GetUserNotInHospitalDapperListAsync([FromBody] BaseGetPagingRequest request)
+        {
+            var users = await hospitalDapperRepository.GetUserNotInHospital(request.Index, request.Size);
+            var totalPage = await hospitalDapperRepository.GetCountUserNotInHospitalAsync(request.Size);
+            var mappedUsers = ObjectMapper.Map<IEnumerable<IdentityUser>, List<UserDto>>(users);
+            var result = new GetPagingResponse<UserDto>
+            {
+                Data = mappedUsers,
+                TotalPage = totalPage
+            };
+            return result;
+        }
         public override async Task DeleteAsync(int id)
         {
             await Repository.DeleteAsync(id);
@@ -45,17 +59,27 @@ namespace HospitalManager.Services
 
         public override async Task<HospitalDto> CreateAsync(CreateUpdateHospitalDto input)
         {
-            var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
-            if (checkCode != null)
+            try
             {
-                throw new BusinessException()
-                    .WithData("message","helo");
+                var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+                if (checkCode != null)
+                {
+                    throw new BusinessException()
+                        .WithData("message", "helo");
+                }
+                return await base.CreateAsync(input);
             }
-            return await base.CreateAsync(input);
+           
+            catch (Exception ex)
+            {
+                // Xử lý các lỗi khác nếu cần
+                throw new ApplicationException("An unexpected error occurred while creating the hospital.", ex);
+            }
+        
         }
         public override async Task<HospitalDto> UpdateAsync(int id, CreateUpdateHospitalDto input)
         {
-            var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+            var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
             if (checkCode != null)
             {
                 throw new BusinessException()

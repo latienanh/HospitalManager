@@ -1,0 +1,27 @@
+<nz-modal 
+  [(nzVisible)]="isVisibleImportDistrict.showImportForm" 
+  nzTitle="Thêm tỉnh" 
+  (nzOnCancel)="handleCancel()" 
+  [nzOkText]="'Xác nhận'"
+  [nzCancelText]="'Hủy'"
+  (nzOnOk)="submitForm()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="districtImportForm">
+      <!-- File Upload -->
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="file" nzRequired>Tải lên tệp</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <input type="file" (change)="onFileChange($event)" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Checkbox -->
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isUpdate" nzRequired>Đồng ý cập nhật</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <label nz-checkbox formControlName="isUpdate">Bạn có muốn cập nhật lại dữ liệu khi trùng mã hay không</label>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

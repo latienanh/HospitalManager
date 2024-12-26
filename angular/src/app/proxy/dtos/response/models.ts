@@ -11,6 +11,7 @@ export interface PatientDto extends BaseDto<number> {
   districtCode: number;
   wardCode: number;
   address?: string;
+  hospitalId: number;
 }
 
 export interface DistrictDto extends CommonAdministrativeDto {
@@ -27,10 +28,18 @@ export interface HospitalDto extends BaseDto<number> {
 export interface ProvinceDto extends CommonAdministrativeDto {
 }
 
+export interface UserDto {
+  id?: string;
+  name?: string;
+  userName?: string;
+}
+
 export interface UserHospitalDto extends AuditedEntityDto<number> {
   userId?: string;
   hospitalId: number;
 }
 
 export interface WardDto extends CommonAdministrativeDto {
+  provinceCode: number;
+  districtCode: number;
 }

@@ -3,7 +3,7 @@ import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.cor
 import { Injectable } from '@angular/core';
 import type { BaseGetPagingRequest } from '../dtos/common/models';
 import type { CreateUpdateHospitalDto } from '../dtos/request/create-update/models';
-import type { GetPagingResponse, HospitalDto } from '../dtos/response/models';
+import type { GetPagingResponse, HospitalDto, UserDto } from '../dtos/response/models';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +51,15 @@ export class HospitalService {
       method: 'GET',
       url: '/api/app/hospital',
       params: { sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getUserNotInHospitalDapperList = (request: BaseGetPagingRequest, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, GetPagingResponse<UserDto>>({
+      method: 'POST',
+      url: '/api/app/hospital/get-user-not-in-hospital-dapper-list',
+      body: request,
     },
     { apiName: this.apiName,...config });
   

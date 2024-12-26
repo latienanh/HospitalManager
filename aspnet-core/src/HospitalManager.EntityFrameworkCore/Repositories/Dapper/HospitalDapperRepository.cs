@@ -9,6 +9,7 @@ using HospitalManager.EntityFrameworkCore;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Dapper;
+using Volo.Abp.Identity;
 
 namespace HospitalManager.Repositories.Dapper;
 
@@ -65,6 +66,70 @@ public class HospitalDapperRepository(IDbContextProvider<HospitalManagerDbContex
                     FROM hospitals
                     WHERE IsDeleted = FALSE
                     {additionalConditions}";
+            var count = await dbConnection.ExecuteScalarAsync<int>(
+                query,
+                transaction: await GetDbTransactionAsync()
+            );
+            var result = (int)Math.Ceiling((decimal)count / take);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<IdentityUser>> GetUserNotInHospital(int skip, int take)
+    {
+        try
+        {
+            var dbConnection = await GetDbConnectionAsync();
+
+
+            var query = $@"
+                   select Id,UserName,Name FROM abpusers
+                    join abpuserroles
+                    on abpusers.Id = abpuserroles.UserId
+                    WHERE 
+                    abpuserroles.RoleId = '3a17144e-7dd6-a0b2-45a7-45c1bddbf497' and abpusers.Id NOT IN (
+	                    SELECT userhospitals.UserId FROM userhospitals
+                    )
+                    LIMIT {take} OFFSET {skip * take}    
+                    ";
+
+            var user = await dbConnection.QueryAsync<IdentityUser>(
+                query,
+                transaction: await GetDbTransactionAsync()
+            );
+            return user;
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+    public async  Task<int> GetCountUserNotInHospitalAsync(int take)
+    {
+        try
+        {
+            var dbConnection = await GetDbConnectionAsync();
+
+
+            var query = $@"
+                   select COUNT(*) FROM abpusers
+                    join abpuserroles
+                    on abpusers.Id = abpuserroles.UserId
+                    WHERE 
+                    abpuserroles.RoleId = '3a17144e-7dd6-a0b2-45a7-45c1bddbf497' and abpusers.Id NOT IN (
+	                    SELECT userhospitals.UserId FROM userhospitals
+                    )
+                    ";
 
             var count = await dbConnection.ExecuteScalarAsync<int>(
                 query,

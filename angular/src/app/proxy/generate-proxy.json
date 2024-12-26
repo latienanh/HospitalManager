@@ -2573,6 +2573,43 @@
               "allowAnonymous": null,
               "implementFrom": "HospitalManager.Abstractions.IHospitalService"
             },
+            "GetUserNotInHospitalDapperListAsyncByRequest": {
+              "uniqueName": "GetUserNotInHospitalDapperListAsyncByRequest",
+              "name": "GetUserNotInHospitalDapperListAsync",
+              "httpMethod": "POST",
+              "url": "api/app/hospital/get-user-not-in-hospital-dapper-list",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "request",
+                  "typeAsString": "HospitalManager.Dtos.Common.BaseGetPagingRequest, HospitalManager.Application.Contracts",
+                  "type": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+                  "typeSimple": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "request",
+                  "name": "request",
+                  "jsonName": null,
+                  "type": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+                  "typeSimple": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.UserDto>",
+                "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.UserDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "HospitalManager.Services.HospitalService"
+            },
             "DeleteAsyncById": {
               "uniqueName": "DeleteAsyncById",
               "name": "DeleteAsync",
@@ -3283,6 +3320,23 @@
               "name": "IUserHospitalService",
               "methods": [
                 {
+                  "name": "GetHospitalByUserId",
+                  "parametersOnMethod": [
+                    {
+                      "name": "userId",
+                      "typeAsString": "System.Nullable`1[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                      "type": "System.Guid?",
+                      "typeSimple": "string?",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Int32",
+                    "typeSimple": "number"
+                  }
+                },
+                {
                   "name": "GetAsync",
                   "parametersOnMethod": [
                     {
@@ -3415,6 +3469,43 @@
               },
               "allowAnonymous": null,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
+            },
+            "GetHospitalByUserIdByUserId": {
+              "uniqueName": "GetHospitalByUserIdByUserId",
+              "name": "GetHospitalByUserId",
+              "httpMethod": "GET",
+              "url": "api/app/user-hospital/hospital-by-user-id/{userId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "userId",
+                  "typeAsString": "System.Nullable`1[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "userId",
+                  "name": "userId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Int32",
+                "typeSimple": "number"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "HospitalManager.Abstractions.IUserHospitalService"
             },
             "CreateAsyncByInput": {
               "uniqueName": "CreateAsyncByInput",
@@ -11397,6 +11488,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "HospitalId",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -12242,6 +12345,51 @@
         }
       ]
     },
+    "HospitalManager.Dtos.Response.UserDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateHospitalDto": {
       "baseType": "HospitalManager.Dtos.Request.CreateUpdate.Common.BaseCreateUpdate",
       "isEnum": false,
@@ -12420,7 +12568,32 @@
       "enumNames": null,
       "enumValues": null,
       "genericArguments": null,
-      "properties": []
+      "properties": [
+        {
+          "name": "ProvinceCode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DistrictCode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
     },
     "HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateWardDto": {
       "baseType": "HospitalManager.Dtos.Request.CreateUpdate.Common.CreateUpdateAdministrative",

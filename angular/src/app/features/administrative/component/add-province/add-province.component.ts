@@ -1,23 +1,20 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import {
-  NonNullableFormBuilder,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProvinceService } from '@proxy/services';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subject } from 'rxjs';
 import { ErrorResponse } from '../../../../core/models/error-response.model';
-import { VisibleAddProvince } from '../../models/visibleaddprovince';
+import { VisibleAdd } from '../../models/visible';
 @Component({
   selector: 'app-add-province',
   templateUrl: './add-province.component.html',
   styleUrl: './add-province.component.scss',
 })
 export class AddProvinceComponent implements OnDestroy {
-  @Input() isVisibleAddProvince: VisibleAddProvince ;
-  @Output() visibilityChange = new EventEmitter<VisibleAddProvince>();
+  @Input() isVisibleAddProvince: VisibleAdd;
+  @Output() visibilityChange = new EventEmitter<VisibleAdd>();
   handleCancel() {
-    this.visibilityChange.emit({ addProvinceStatus: false, showAddProvinceForm: false });
+    this.visibilityChange.emit({ addStatus: false, showAddForm: false });
   }
   private destroy$ = new Subject<void>();
 
@@ -29,7 +26,7 @@ export class AddProvinceComponent implements OnDestroy {
   });
 
   constructor(
-    private fb: NonNullableFormBuilder,
+    private fb: FormBuilder,
     private provinceService: ProvinceService,
     private notification: NzNotificationService
   ) {}
@@ -45,31 +42,21 @@ export class AddProvinceComponent implements OnDestroy {
 
       const provinceData = {
         ...formValue,
-        code: Number(formValue.code) // Chuyển đổi code từ string thành number
+        code: Number(formValue.code), // Chuyển đổi code từ string thành number
       };
 
       this.provinceService.create(provinceData).subscribe({
         next: response => {
           console.log('Tạo tỉnh thành công:', response);
-          this.notification.create(
-            'success',
-            'Thêm thành công',
-            `${response.name}`
-          );
+          this.notification.create('success', 'Thêm thành công', `${response.name}`);
           this.provinceAddForm.reset();
-          this.visibilityChange.emit({  showAddProvinceForm: false,addProvinceStatus: true });
+          this.visibilityChange.emit({ showAddForm: false, addStatus: true });
         },
-        error:(err:ErrorResponse)  => {
-          console.log(err)
-          this.notification.create(
-            'error',
-            'Lỗi',
-            `${err.error.error.data.message}`
-          );
+        error: (err: ErrorResponse) => {
+          console.log(err);
+          this.notification.create('error', 'Lỗi', `${err.error.error.data.message}`);
         },
       });
-
-     
     } else {
       Object.values(this.provinceAddForm.controls).forEach(control => {
         if (control.invalid) {

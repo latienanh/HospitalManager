@@ -1,31 +1,34 @@
 import { PagedResultDto } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BaseGetPagingRequest } from '@proxy/dtos/common';
 import { DistrictDto, GetPagingResponse, ProvinceDto, WardDto } from '@proxy/dtos/response';
 import { ProvinceService } from '@proxy/services';
-import { VisibleAddProvince, VisibleImportProvince } from '../../models/visibleaddprovince';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { VisibleAdd, VisibleImport, VisibleUpdate } from '../../models/visible';
 
 @Component({
   selector: 'app-list-province',
   templateUrl: './list-province.component.html',
   styleUrl: './list-province.component.scss',
 })
-export class ListProvinceComponent {
-  isVisibleAddProvince: VisibleAddProvince = {
-    addProvinceStatus: false,
-    showAddProvinceForm: false,
+export class ListProvinceComponent implements OnInit {
+  isVisibleAddProvince: VisibleAdd = {
+    addStatus: false,
+    showAddForm: false,
   };
-  isVisibleImportProvince: VisibleImportProvince = {
-    importProvinceStatus: false,
-    showImportProvinceForm: false,
+  isVisibleImportProvince: VisibleImport = {
+    importStatus: false,
+    showImportForm: false,
   };
-
+  isVisibleUpdateProvince: VisibleUpdate = {
+    updateStatus: false,
+    showUpdateForm: false,
+  };
   provinces: GetPagingResponse<ProvinceDto> = {
     data: [],
     totalPage: 0,
   };
-
+  selectedId:number|null
   currentPage: number = 1;
   pageSize: number = 10;
 
@@ -55,13 +58,7 @@ export class ListProvinceComponent {
 
   trackById(
     index: number,
-    item: ProvinceDto & {
-      expand: boolean;
-      districts?: PagedResultDto<DistrictDto> & {
-        expand: boolean;
-        wards?: PagedResultDto<WardDto>;
-      };
-    }
+    item: ProvinceDto
   ): any {
     return item.id;
   }
@@ -72,29 +69,29 @@ export class ListProvinceComponent {
   }
 
   onAdd() {
-    this.isVisibleAddProvince.showAddProvinceForm = true;
+    this.isVisibleAddProvince.showAddForm = true;
   }
 
-  handleVisibilityAddChange(event: VisibleAddProvince) {
-    this.isVisibleAddProvince.showAddProvinceForm = event.showAddProvinceForm;
-    this.isVisibleAddProvince.addProvinceStatus = event.addProvinceStatus;
+  handleVisibilityAddChange(event: VisibleAdd) {
+    this.isVisibleAddProvince.showAddForm = event.showAddForm;
+    this.isVisibleAddProvince.addStatus = event.addStatus;
     console.log(this.isVisibleAddProvince);
-    if (this.isVisibleAddProvince.addProvinceStatus) this.loadProvinces();
+    if (this.isVisibleAddProvince.addStatus) this.loadProvinces();
     else {
       console.log('khong lam gi');
     }
   }
-  handleVisibilityImportChange(event: VisibleImportProvince) {
-    this.isVisibleImportProvince.showImportProvinceForm = event.showImportProvinceForm;
-    this.isVisibleImportProvince.importProvinceStatus = event.importProvinceStatus;
-    if (this.isVisibleImportProvince.importProvinceStatus) 
+  handleVisibilityImportChange(event: VisibleImport) {
+    this.isVisibleImportProvince.showImportForm = event.showImportForm;
+    this.isVisibleImportProvince.importStatus = event.importStatus;
+    if (this.isVisibleImportProvince.importStatus) 
       this.loadProvinces();
     else {
       console.log('khong lam gi');
     }
   }
   onExport() {
-    this.isVisibleImportProvince.showImportProvinceForm = true;
+    this.isVisibleImportProvince.showImportForm = true;
   }
   onDelete(id:number){
     this.provinceService.delete(id).subscribe(
@@ -109,7 +106,18 @@ export class ListProvinceComponent {
       }
     )
   }
-  onEdit(){
-    this.isVisibleAddProvince.showAddProvinceForm = true;
+  onEdit(id:number){
+    this.selectedId = id;
+    this.isVisibleUpdateProvince.showUpdateForm = true;
+  }
+  handleVisibilityUpdateChange(event: VisibleUpdate){
+    this.isVisibleUpdateProvince.showUpdateForm = event.showUpdateForm;
+    this.isVisibleUpdateProvince.updateStatus = event.updateStatus;
+    if (this.isVisibleUpdateProvince.updateStatus) 
+      this.loadProvinces();
+    else {
+      console.log('khong lam gi');
+    }
+    this.selectedId = null
   }
 }

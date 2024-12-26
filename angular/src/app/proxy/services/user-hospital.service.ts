@@ -36,6 +36,14 @@ export class UserHospitalService {
     { apiName: this.apiName,...config });
   
 
+  getHospitalByUserIdByUserId = (userId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, number>({
+      method: 'GET',
+      url: `/api/app/user-hospital/hospital-by-user-id/${userId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: PagedAndSortedResultRequestDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<UserHospitalDto>>({
       method: 'GET',

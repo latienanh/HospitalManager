@@ -88,19 +88,25 @@ public class ExcelService : IScopedDependency
             using (var package = new ExcelPackage(fileStream))
             {
                 var worksheet = package.Workbook.Worksheets[0];
+       
                 var rowCount = worksheet.Dimension.Rows;
-
+                //2
                 for (int row = 2; row <= rowCount - 1; row++)
                 {
-                    var code = int.Parse(worksheet.Cells[row, 1].Text);
-
+                    var checkNullCode = worksheet.Cells[row, 1].Text;
+                    if (string.IsNullOrEmpty(checkNullCode))
+                    {
+                        continue;
+                    }
+                    var code = int.Parse(checkNullCode);
+                    
                     // Check if the province code already exists in the database
-                    var existinEntity = await findExistingEntity(code);
-                    if (existinEntity != null)
+                    var existingEntity = await findExistingEntity(code);
+                    if (existingEntity != null)
                     {
                         if (isUpdate)
                         {
-                            var entityUpdate = mapRowToEntityUpdate(existinEntity,worksheet,row);
+                            var entityUpdate = mapRowToEntityUpdate(existingEntity,worksheet,row);
                             entitiesToUpdate.Add(entityUpdate);
                         }
                         

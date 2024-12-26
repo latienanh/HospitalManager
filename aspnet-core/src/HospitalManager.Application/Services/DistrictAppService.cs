@@ -59,7 +59,7 @@ public class DistrictAppService(IRepository<District, int> repository,
     }
     public override async Task<DistrictDto> UpdateAsync(int id, CreateUpdateDistrictDto input)
     {
-        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
         if (checkCode != null)
         {
             throw new BusinessException()

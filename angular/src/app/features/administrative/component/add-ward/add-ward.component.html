@@ -1,1 +1,47 @@
-<p>add-ward works!</p>
+<nz-modal [(nzVisible)]="isVisibleAddWard.showAddForm" nzTitle="Thêm huyện" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="wardAddForm" (ngSubmit)="submitForm()">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="code">Mã</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Mã không hợp lệ!">
+            <input nz-input formControlName="code" id="code" />
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Tên</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập tên!">
+            <input nz-input id="name" formControlName="name" />
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="administrativeLevel" nzRequired>Cấp</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập cấp!">
+            <input nz-input formControlName="administrativeLevel" id="administrativeLevel" />
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="note" nzRequired>Ghi chú</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập ghi chú!">
+            <input nz-input formControlName="note" id="note" />
+          </nz-form-control>
+        </nz-form-item>
+  
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="provinceCode" nzRequired>Chọn tỉnh</nz-form-label>
+          <nz-select formControlName="provinceCode" nzAllowClear nzPlaceHolder="Chọn tỉnh" nzShowSearch>
+            <nz-option *ngFor="let province of provinces.data" [nzValue]="province.code" [nzLabel]="province.name"></nz-option>
+          </nz-select>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="districtCode" nzRequired>Chọn huyện</nz-form-label>
+            <nz-select formControlName="districtCode" nzAllowClear nzPlaceHolder="Chọn huyện" nzShowSearch>
+              <nz-option *ngFor="let district of districts.data" [nzValue]="district.code" [nzLabel]="district.name"></nz-option>
+            </nz-select>
+          </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+  

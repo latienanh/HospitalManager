@@ -1,0 +1,14 @@
+<nz-modal [(nzVisible)]="isVisibleAddUserHospital.showAddForm" nzTitle="Thêm người dùng vào bệnh viện" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="userHospitalAddForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="userIdList">Người dùng</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng chọn ít nhất một người dùng!">
+          <nz-select formControlName="userIdList" nzMode="multiple" nzPlaceHolder="Chọn người dùng">
+            <nz-option *ngFor="let user of users.data" [nzValue]="user.id" [nzLabel]="user.userName"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

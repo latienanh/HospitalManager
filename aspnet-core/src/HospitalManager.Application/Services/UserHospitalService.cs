@@ -30,5 +30,11 @@ namespace HospitalManager.Services
         {
             await Repository.DeleteAsync(id);
         }
+
+        public async Task<int> GetHospitalByUserId(Guid? userId)
+        {
+            var result = await Repository.GetAsync(x => x.UserId == userId);
+            return result.HospitalId;
+        }
     }
 }

@@ -65,7 +65,7 @@ export class DistrictService {
     { apiName: this.apiName,...config });
   
 
-  importExcelByFileAndIsUpdate = (file: IFormFile, isUpdate: boolean, config?: Partial<Rest.Config>) =>
+  importExcelByFileAndIsUpdate = (file: any, isUpdate: boolean, config?: Partial<Rest.Config>) =>
     this.restService.request<any, boolean>({
       method: 'POST',
       url: '/api/app/district/import-excel',

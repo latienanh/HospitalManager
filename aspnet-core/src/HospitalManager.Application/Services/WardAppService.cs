@@ -62,7 +62,7 @@ public class WardAppService(
 
     public override async Task<WardDto> UpdateAsync(int id, CreateUpdateWardDto input)
     {
-        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
         if (checkCode != null)
         {
             throw new BusinessException()
@@ -101,12 +101,14 @@ public class WardAppService(
                     {
                         return new Ward()
                         {
-                            Code = int.Parse(worksheet.Cells[row, 1].Text),
-                            Name = worksheet.Cells[row, 2].Text,
-                            AdministrativeLevel = worksheet.Cells[row, 4].Text,
-                            Note = "",
-                            DistrictCode = int.Parse(worksheet.Cells[2, 5].Text),
-                            ProvinceCode = int.Parse(worksheet.Cells[row, 7].Text),
+                            Code = string.IsNullOrEmpty(worksheet.Cells[row, 1].Text) ? 0 : int.TryParse(worksheet.Cells[row, 1].Text, out var code) ? code : 0,
+                            Name = string.IsNullOrEmpty(worksheet.Cells[row, 2].Text) ? string.Empty : worksheet.Cells[row, 2].Text,
+                            AdministrativeLevel = string.IsNullOrEmpty(worksheet.Cells[row, 4].Text) ? string.Empty : worksheet.Cells[row, 4].Text,
+                            Note = string.Empty, // Always an empty string
+                            DistrictCode = string.IsNullOrEmpty(worksheet.Cells[row, 5].Text) ? 0 : int.TryParse(worksheet.Cells[row, 5].Text, out var districtCode) ? districtCode : 0,
+                            ProvinceCode = string.IsNullOrEmpty(worksheet.Cells[row, 7].Text) ? 0 : int.TryParse(worksheet.Cells[row, 7].Text, out var provinceCode) ? provinceCode : 0,
+
+
                         };
                     },
                     findExistingEntity: async code =>
@@ -123,11 +125,14 @@ public class WardAppService(
                     },
                     mapRowToEntityUpdate: (Ward wardEx, ExcelWorksheet worksheet, int row) =>
                     {
-                        wardEx.Code = int.Parse(worksheet.Cells[row, 1].Text);
-                        wardEx.Name = worksheet.Cells[row, 2].Text; ;
-                        wardEx.AdministrativeLevel = worksheet.Cells[row, 4].Text;
-                        wardEx.DistrictCode = int.Parse(worksheet.Cells[2, 5].Text);
-                        wardEx.ProvinceCode = int.Parse(worksheet.Cells[row, 7].Text);
+                        wardEx.Code = string.IsNullOrEmpty(worksheet.Cells[row, 1].Text) ? 0 : int.TryParse(worksheet.Cells[row, 1].Text, out var code) ? code : 0;
+                        wardEx.Name = string.IsNullOrEmpty(worksheet.Cells[row, 2].Text) ? string.Empty : worksheet.Cells[row, 2].Text;
+                        wardEx.AdministrativeLevel = string.IsNullOrEmpty(worksheet.Cells[row, 4].Text) ? string.Empty : worksheet.Cells[row, 4].Text;
+                        wardEx.Note = string.Empty;
+                        wardEx.DistrictCode = string.IsNullOrEmpty(worksheet.Cells[row, 5].Text) ? 0 : int.TryParse(worksheet.Cells[row, 5].Text, out var districtCode) ? districtCode : 0;
+                        wardEx.ProvinceCode = string.IsNullOrEmpty(worksheet.Cells[row, 7].Text) ? 0 : int.TryParse(worksheet.Cells[row, 7].Text, out var provinceCode) ? provinceCode : 0;
+
+
                         return wardEx;
                     }
                 );

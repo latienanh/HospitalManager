@@ -6,6 +6,9 @@
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
     "Menu:Administrative": "Administrative",
     "Menu:Hospital": "Hospital",
-    "Menu:Patient": "Patient"
+    "Menu:Patient": "Patient",
+    "Menu:Province": "Province",
+    "Menu:District": "District",
+    "Menu:Ward": "Ward"
   }
 }

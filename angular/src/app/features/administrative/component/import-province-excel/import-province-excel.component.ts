@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { VisibleImportProvince } from '../../models/visibleaddprovince';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProvinceService } from '../../../../proxy/services/province.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { createIFormFile } from 'src/app/features/common/create-iformfile';
 import { IFormFile } from '@proxy/microsoft/asp-net-core/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { VisibleImport } from '../../models/visible';
 
 @Component({
   selector: 'app-import-province-excel',
@@ -13,8 +13,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./import-province-excel.component.scss'],
 })
 export class ImportProvinceExcelComponent {
-  @Input() isVisibleImportProvince: VisibleImportProvince;
-  @Output() visibilityChange = new EventEmitter<VisibleImportProvince>();
+  @Input() isVisibleImportProvince: VisibleImport;
+  @Output() visibilityChange = new EventEmitter<VisibleImport>();
   provinceImportForm: FormGroup;
   selectedFile: File | null = null;
 
@@ -38,7 +38,7 @@ export class ImportProvinceExcelComponent {
   }
 
   handleCancel() {
-    this.visibilityChange.emit({ importProvinceStatus: false, showImportProvinceForm: false });
+    this.visibilityChange.emit({ importStatus: false, showImportForm: false });
   }
 
   submitForm(): void {
@@ -60,7 +60,7 @@ export class ImportProvinceExcelComponent {
           this.notification.success('Thành công', 'Tệp đã được tải lên thành công');
           this.provinceImportForm.reset();
           this.selectedFile = null;
-          this.visibilityChange.emit({ importProvinceStatus: true, showImportProvinceForm: false });
+          this.visibilityChange.emit({ importStatus: true, showImportForm: false });
         },
         error: (err) => {
           console.error(err);

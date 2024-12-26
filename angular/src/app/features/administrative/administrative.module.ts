@@ -22,6 +22,11 @@ import { ImportProvinceExcelComponent } from './component/import-province-excel/
 import { ListDistrictComponent } from './component/list-district/list-district.component';
 import { ListProvinceComponent } from './component/list-province/list-province.component';
 import { ListWardComponent } from './component/list-ward/list-ward.component';
+import { UpdateDistrictComponent } from './component/update-district/update-district.component';
+import { UpdateProvinceComponent } from './component/update-province/update-province.component';
+import { UpdateWardComponent } from './component/update-ward/update-ward.component';
+import { ImportDistrictExcelComponent } from './component/import-district-excel/import-district-excel.component';
+import { ImportWardExcelComponent } from './component/import-ward-excel/import-ward-excel.component';
 @NgModule({
   declarations: [
     AddProvinceComponent,
@@ -30,6 +35,11 @@ import { ListWardComponent } from './component/list-ward/list-ward.component';
     ListProvinceComponent,
     ListDistrictComponent,
     ListWardComponent,
+    UpdateDistrictComponent,
+    UpdateProvinceComponent,
+    UpdateWardComponent,
+    ImportDistrictExcelComponent,
+    ImportWardExcelComponent,
     ImportProvinceExcelComponent,
   ],
   imports: [

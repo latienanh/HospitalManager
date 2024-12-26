@@ -1,1 +1,58 @@
-<p>list-ward works!</p>
+<div>
+    <button nz-button nzType="primary" (click)="onAdd()">Thêm mới xã</button>
+    <app-add-ward [isVisibleAddWard]="isVisibleAddWard" (visibilityChange)="handleVisibilityAddChange($event)">
+    </app-add-ward>
+  
+    <button nz-button nzType="default" (click)="onExport()">Nhập xã</button>
+    <app-import-ward-excel [isVisibleImportWard]="isVisibleImportWard"
+      (visibilityChange)="handleVisibilityImportChange($event)">
+  
+    </app-import-ward-excel>
+    <form [formGroup]="form">
+      <nz-select formControlName="selectedValueProvince" nzAllowClear nzPlaceHolder="Chọn tỉnh" nzShowSearch >
+        <nz-option *ngFor="let province of provinces.data" [nzValue]="province.code" [nzLabel]="province.name"></nz-option>
+      </nz-select>
+      <nz-select formControlName="selectedValueDistrict" nzAllowClear nzPlaceHolder="Chọn huyện" nzShowSearch >
+        <nz-option *ngFor="let district of districts.data" [nzValue]="district.code" [nzLabel]="district.name"></nz-option>
+      </nz-select>
+    </form>
+    
+    
+  </div>
+  
+  <nz-table #nestedTable [nzData]="districts.data" [nzTotal]="pageSize * districts.totalPage" [nzPageIndex]="currentPage"
+    (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách xã'">
+  
+    <thead>
+      <tr>
+        <th>Mã</th>
+        <th>Tên</th>
+        <th>Cấp</th>
+        <th>Mã huyện</th>
+        <th>Mã tỉnh</th>
+        <th>Thời gian tạo</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of wards.data; trackBy: trackById">
+        <tr>
+          <td>{{ data.code }}</td>
+          <td>{{ data.name }}</td>
+          <td>{{ data.administrativeLevel }}</td>
+          <td>{{ data.districtCode }}</td>
+          <td>{{ data.provinceCode }}</td>
+          <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+          <td>
+            <button nz-button nzType="default" (click)="onDelete(data.id)">
+              Xoá
+            </button>
+            <button nz-button nzType="default" (click)="onEdit(data.id)">
+              Sửa
+            </button>
+            <app-update-ward *ngIf="selectedId === data.id" [isVisibleUpdateWard]="isVisibleUpdateWard" (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-ward>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>

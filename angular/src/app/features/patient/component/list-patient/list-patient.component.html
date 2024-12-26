@@ -1,1 +1,45 @@
-<p>list-patient works!</p>
+<div>
+    <button nz-button nzType="primary" (click)="onAdd()">Thêm mới bệnh viện</button>
+    <!-- <app-add-hospital [isVisibleAddHospital]="isVisibleAddHospital"
+      (visibilityChange)="handleVisibilityAddChange($event)">
+    </app-add-hospital> -->
+  </div>
+  
+  <nz-table #nestedTable [nzData]="patients.data" [nzTotal]="pageSize * patients.totalPage" [nzPageIndex]="currentPage"
+    (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách bệnh viện '">
+  
+    <thead>
+      <tr>
+        <th>Mã</th>
+        <th>Tên</th>
+        <th>Mã tỉnh</th>
+        <th>Mã huyện</th>
+        <th>Mã xã</th>
+        <th>Thời gian tạo</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of patients.data; trackBy: trackById">
+        <tr>
+          <td>{{ data.code }}</td>
+          <td>{{ data.name }}</td>
+          <td>{{ data.provinceCode }}</td>
+          <td>{{ data.districtCode }}</td>
+          <td>{{ data.wardCode }}</td>
+          <td>{{ data.address }}</td>
+          <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+          <td>
+            <button nz-button nzType="default" (click)="onDelete(data.id)">
+              Xoá
+            </button>
+            <button nz-button nzType="default" (click)="onEdit(data.id)">
+              Sửa
+            </button>
+            <app-update-hospital *ngIf="selectedId === data.id" [isVisibleUpdateHospital]="isVisibleUpdateHospital"
+              (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-hospital>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>

@@ -33,9 +33,10 @@
           <button nz-button nzType="default" (click)="onDelete(data.id)">
             Xoá
           </button>
-          <button nz-button nzType="default" (click)="onEdit()">
+          <button nz-button nzType="default" (click)="onEdit(data.id)">
             Sửa
           </button>
+          <app-update-province *ngIf="selectedId === data.id" [isVisibleUpdateProvince]="isVisibleUpdateProvince" (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-province>
         </td>
       </tr>
     </ng-container>
