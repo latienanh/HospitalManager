@@ -102,13 +102,20 @@ namespace PatientManager.Services
             }
             return await base.UpdateAsync(id, input);
         }
-        public async Task<List<Patient>> Test()
+        public async Task<List<(int HospitalId, int Count)>> Test()
         {
             var today = DateTime.Today;
             var tomorrow = today.AddDays(1);
             var newPatientsByHospital =
-                await repository.GetListAsync(x => x.CreationTime >= today && x.CreationTime <= tomorrow);
-            return newPatientsByHospital;
+                await repository.GetListAsync(x => x.CreationTime >= today && x.CreationTime < tomorrow);
+
+            var groupCountByHospital = newPatientsByHospital
+                .GroupBy(x => x.HospitalId)
+                .Select(group => (HospitalId: group.Key, Count: group.Count()))
+                .ToList();
+
+            return groupCountByHospital;
         }
+
     }
 }
