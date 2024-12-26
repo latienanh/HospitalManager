@@ -1,6 +1,10 @@
-﻿using HospitalManager.Entities;
+﻿using System.Collections.Generic;
+using System.Text;
+using HospitalManager.Entities;
 using Quartz;
 using System.Threading.Tasks;
+using HospitalManager.Dtos.Response;
+using PatientManager.Services;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
@@ -11,11 +15,14 @@ public class DailyReportJob : IJob, ITransientDependency
 {
     private readonly IEmailSender _emailSender;
     private readonly IUnitOfWorkManager _unitOfWorkManager;
+    private readonly PatientService _patientService;
 
-    public DailyReportJob(IEmailSender emailSender, IUnitOfWorkManager unitOfWorkManager, IRepository<Patient, int> repository)
+
+    public DailyReportJob(IEmailSender emailSender, IUnitOfWorkManager unitOfWorkManager, PatientService patientService)
     {
         _emailSender = emailSender;
         _unitOfWorkManager = unitOfWorkManager;
+        _patientService = patientService;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -23,29 +30,61 @@ public class DailyReportJob : IJob, ITransientDependency
         using (var uow = _unitOfWorkManager.Begin())
         {
             // Truy vấn thông tin
-            int newPatientsByHospital = GetNewPatientsByHospital();
-            int newPatientsByProvince = GetNewPatientsByProvince();
+            var newPatientsByHospital = await _patientService.HospitalPatientCountReport();
+            var newPatientsByProvince = await _patientService.ProvincePatientCountReport();
 
+            var hospitalReportHtml = GenerateHospitalPatientReportHtml(newPatientsByHospital); 
+            var provinceReportHtml = GenerateProvincePatientReportHtml(newPatientsByProvince);
+
+            var emailBody = new StringBuilder();
+            emailBody.Append("<h1>Báo cáo hàng ngày</h1>"); 
+            emailBody.Append(hospitalReportHtml); 
+            emailBody.Append(provinceReportHtml);
             // Gửi email
             await _emailSender.SendAsync(
                 "latienanh328@gmail.com",
                 "Báo cáo hàng ngày",
-                $"Số bệnh nhân mới nhập viện trong ngày: {newPatientsByHospital}\n" +
-                $"Số bệnh nhân mới thuộc các tỉnh trong ngày: {newPatientsByProvince}"
+                emailBody.ToString(),
+                isBodyHtml: true
             );
 
             await uow.CompleteAsync();
         }
     }
-
-    private int GetNewPatientsByHospital()
+    private string GenerateHospitalPatientReportHtml(List<HospitalPatientCountDto> report)
     {
-        return 0;
+        var sb = new StringBuilder();
+
+        sb.Append("<h2>Báo cáo bệnh nhân theo bệnh viện</h2>");
+        sb.Append("<table border='1' style='width:100%; border-collapse:collapse;'>");
+        sb.Append("<tr><th>Bệnh viện</th><th>Số lượng</th></tr>");
+
+        foreach (var item in report)
+        {
+            sb.Append($"<tr><td>{item.HospitalId}</td><td>{item.Count}</td></tr>");
+        }
+
+        sb.Append("</table>");
+
+        return sb.ToString();
     }
 
-    private int GetNewPatientsByProvince()
+    private string GenerateProvincePatientReportHtml(List<ProvincePatientCountDto> report)
     {
-        // Thực hiện truy vấn để lấy số liệu bệnh nhân mới thuộc các tỉnh trong ngày
-        return 0; // Thay bằng logic thực tế
+        var sb = new StringBuilder();
+
+        sb.Append("<h2>Báo cáo bệnh nhân theo tỉnh thành</h2>");
+        sb.Append("<table border='1' style='width:100%; border-collapse:collapse;'>");
+        sb.Append("<tr><th>Tỉnh thành</th><th>Số lượng</th></tr>");
+
+        foreach (var item in report)
+        {
+            sb.Append($"<tr><td>{item.ProvinceCode}</td><td>{item.Count}</td></tr>");
+        }
+
+        sb.Append("</table>");
+
+        return sb.ToString();
     }
+
 }

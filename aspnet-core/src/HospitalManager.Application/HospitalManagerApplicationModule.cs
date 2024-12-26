@@ -81,7 +81,7 @@ public class HospitalManagerApplicationModule : AbpModule
             q.AddTrigger(opts => opts
                 .ForJob(jobKey)
                 .WithIdentity("DailyReportJob-trigger")
-                .WithCronSchedule("0 18 1 * * ?"));
+                .WithCronSchedule("0 11 2 * * ?"));
         });
 
         context.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
