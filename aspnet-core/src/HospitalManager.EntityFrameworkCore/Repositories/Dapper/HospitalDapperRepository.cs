@@ -94,11 +94,13 @@ public class HospitalDapperRepository(IDbContextProvider<HospitalManagerDbContex
                     join abpuserroles
                     on abpusers.Id = abpuserroles.UserId
                     WHERE 
-                    abpuserroles.RoleId = '3a17144e-7dd6-a0b2-45a7-45c1bddbf497' and abpusers.Id NOT IN (
+                    abpuserroles.RoleId = '3a171567-67c2-1579-f1eb-9f96caab15af' and abpusers.Id NOT IN (
 	                    SELECT userhospitals.UserId FROM userhospitals
                     )
                     LIMIT {take} OFFSET {skip * take}    
                     ";
+            //'3a171567-67c2-1579-f1eb-9f96caab15af'
+            //'3a17144e-7dd6-a0b2-45a7-45c1bddbf497'
 
             var user = await dbConnection.QueryAsync<IdentityUser>(
                 query,
@@ -126,7 +128,7 @@ public class HospitalDapperRepository(IDbContextProvider<HospitalManagerDbContex
                     join abpuserroles
                     on abpusers.Id = abpuserroles.UserId
                     WHERE 
-                    abpuserroles.RoleId = '3a17144e-7dd6-a0b2-45a7-45c1bddbf497' and abpusers.Id NOT IN (
+                    abpuserroles.RoleId = '3a171567-67c2-1579-f1eb-9f96caab15af' and abpusers.Id NOT IN (
 	                    SELECT userhospitals.UserId FROM userhospitals
                     )
                     ";

@@ -11,5 +11,5 @@ namespace HospitalManager.Abstractions;
 
 public interface IUserHospitalService : ICrudAppService<UserHospitalDto, int, PagedAndSortedResultRequestDto, CreateUpdateUserHospitalDto>
 {
-    Task<int> GetHospitalByUserId(Guid?  userId);
+    Task<int?> GetHospitalByUserId(Guid?  userId);
 }

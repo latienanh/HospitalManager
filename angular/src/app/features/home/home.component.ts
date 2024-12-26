@@ -1,5 +1,7 @@
 import { AuthService } from '@abp/ng.core';
 import { Component } from '@angular/core';
+import { NotificationAddPatientService } from 'src/app/core/service/notification-add-patient.service';
+
 
 @Component({
   selector: 'app-home',
@@ -11,7 +13,7 @@ export class HomeComponent {
     return this.authService.isAuthenticated;
   }
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,private notificationAddPatientService: NotificationAddPatientService) {}
 
   login() {
     this.authService.navigateToLogin();

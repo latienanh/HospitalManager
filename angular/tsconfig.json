@@ -22,7 +22,8 @@
       ],
       "@proxy/*": [
         "src/app/proxy/*"
-      ]
+      ],
+      "@abp/signalr": ["node_modules/@abp/signalr"]
     },
     "useDefineForClassFields": false
   },

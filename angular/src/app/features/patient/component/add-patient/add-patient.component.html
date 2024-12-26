@@ -1,4 +1,4 @@
-<nz-modal [(nzVisible)]="isVisibleAddPatient.showAddForm" nzTitle="Thêm bệnh viện" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
+<nz-modal [(nzVisible)]="isVisibleAddPatient.showAddForm" nzTitle="Thêm bệnh nhân" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()">
     <ng-container *nzModalContent>
       <form nz-form [formGroup]="patientAddForm" (ngSubmit)="submitForm()">
         <nz-form-item>
@@ -7,17 +7,12 @@
             <input nz-input formControlName="code" id="code" />
           </nz-form-control>
         </nz-form-item>
-  
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Tên</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Vui lòng nhập tên!">
             <input nz-input id="name" formControlName="name" />
           </nz-form-control>
         </nz-form-item>
-  
-  
-        
-  
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="provinceCode" nzRequired>Chọn tỉnh</nz-form-label>
           <nz-select formControlName="provinceCode" nzAllowClear nzPlaceHolder="Chọn tỉnh" nzShowSearch>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OfficeOpenXml;
 using Volo.Abp.Account;
+using Volo.Abp.AspNetCore.SignalR;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.FluentValidation;
@@ -23,7 +24,8 @@ namespace HospitalManager;
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(AbpFluentValidationModule)
+    typeof(AbpFluentValidationModule),
+    typeof(AbpAspNetCoreSignalRModule)
     )]
 public class HospitalManagerApplicationModule : AbpModule
 {

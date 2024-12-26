@@ -1,13 +1,12 @@
 <div>
-    <button nz-button nzType="primary" (click)="onAdd()">Thêm mới bệnh viện</button>
-    <!-- <app-add-hospital [isVisibleAddHospital]="isVisibleAddHospital"
+    <button nz-button nzType="primary" (click)="onAdd()">Thêm mới bệnh nhân</button>
+    <app-add-patient [isVisibleAddPatient]="isVisibleAddPatient"
       (visibilityChange)="handleVisibilityAddChange($event)">
-    </app-add-hospital> -->
+    </app-add-patient>
   </div>
   
   <nz-table #nestedTable [nzData]="patients.data" [nzTotal]="pageSize * patients.totalPage" [nzPageIndex]="currentPage"
-    (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách bệnh viện '">
-  
+    (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách bệnh nhân '">
     <thead>
       <tr>
         <th>Mã</th>
@@ -15,6 +14,7 @@
         <th>Mã tỉnh</th>
         <th>Mã huyện</th>
         <th>Mã xã</th>
+        <th>Địa chỉ</th>
         <th>Thời gian tạo</th>
         <th>Hành động</th>
       </tr>
@@ -36,8 +36,8 @@
             <button nz-button nzType="default" (click)="onEdit(data.id)">
               Sửa
             </button>
-            <app-update-hospital *ngIf="selectedId === data.id" [isVisibleUpdateHospital]="isVisibleUpdateHospital"
-              (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-hospital>
+            <app-update-patient *ngIf="selectedId === data.id" [isVisibleUpdatePatient]="isVisibleUpdatePatient"
+              (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-patient>
           </td>
         </tr>
       </ng-container>

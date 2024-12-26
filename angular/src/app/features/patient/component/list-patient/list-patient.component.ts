@@ -3,6 +3,7 @@ import { BaseGetPagingRequest } from '@proxy/dtos/common';
 import { GetPagingResponse, PatientDto } from '@proxy/dtos/response';
 import { PatientService } from '@proxy/patient-manager/services';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ErrorResponse } from 'src/app/core/models/error-response.model';
 import { VisibleAdd, VisibleUpdate } from 'src/app/features/administrative/models/visible';
 
 @Component({
@@ -49,8 +50,10 @@ export class ListPatientComponent implements OnInit {
         this.patients = response;
         console.log(this.patients);
       },
-      error: err => {
+      error: (err:ErrorResponse)  => {
         console.log(err);
+        if(err.status==403)
+          this.notification.create('error', 'Lỗi', `${err.error.error.data.message}`);
       },
     });
   }
