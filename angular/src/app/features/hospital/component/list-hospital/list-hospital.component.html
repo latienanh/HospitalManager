@@ -10,6 +10,7 @@
 
   <thead>
     <tr>
+      <th></th>
       <th>Mã</th>
       <th>Tên</th>
       <th>Mã tỉnh</th>
@@ -23,6 +24,7 @@
   <tbody>
     <ng-container *ngFor="let data of hospitals.data; trackBy: trackById">
       <tr>
+        <td [(nzExpand)]="data.expand" (nzExpandChange)="onExpandChange(data)"></td>
         <td>{{ data.code }}</td>
         <td>{{ data.name }}</td>
         <td>{{ data.provinceCode }}</td>
@@ -44,6 +46,33 @@
           </button>
           <app-add-user-hospital *ngIf="selectedIdAddUser === data.id" [isVisibleAddUserHospital]="isVisibleAddUserHospital"
             (visibilityChange)="handleVisibilityAddUserChange($event)" [id]="data.id"></app-add-user-hospital>
+        </td>
+      </tr>
+      <tr *ngIf="data.expand">
+        <td colspan="9">
+          <nz-table
+            #innerTable
+            [nzData]="data.userHospital"
+            nzSize="middle"
+            [nzShowPagination]="false"
+          >
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>UserName</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let user of data.userHospital; trackBy: trackById">
+                <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.userName }}</td>            
+                <td>{{ user.Name }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
         </td>
       </tr>
     </ng-container>

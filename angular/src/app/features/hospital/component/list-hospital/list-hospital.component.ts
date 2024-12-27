@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseGetPagingRequest } from '@proxy/dtos/common';
-import { GetPagingResponse, HospitalDto } from '@proxy/dtos/response';
+import { GetPagingResponse, HospitalDto, UserDto } from '@proxy/dtos/response';
 import { HospitalService } from '@proxy/services';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { VisibleAdd, VisibleImport, VisibleUpdate } from 'src/app/features/administrative/models/visible';
+import {
+  VisibleAdd,
+  VisibleImport,
+  VisibleUpdate,
+} from 'src/app/features/administrative/models/visible';
 
 @Component({
   selector: 'app-list-hospital',
   templateUrl: './list-hospital.component.html',
-  styleUrl: './list-hospital.component.scss'
+  styleUrl: './list-hospital.component.scss',
 })
-export class ListHospitalComponent implements OnInit{
+export class ListHospitalComponent implements OnInit {
   isVisibleAddHospital: VisibleAdd = {
     addStatus: false,
     showAddForm: false,
@@ -23,21 +27,43 @@ export class ListHospitalComponent implements OnInit{
     updateStatus: false,
     showUpdateForm: false,
   };
-  hospitals: GetPagingResponse<HospitalDto> = {
+  hospitals: GetPagingResponse<HospitalDto & { expand: boolean; userHospital: UserDto[] }> = {
     data: [],
     totalPage: 0,
   };
-  selectedId:number|null
-  selectedIdAddUser:number|null
+  selectedId: number | null;
+  selectedIdAddUser: number | null;
   currentPage: number = 1;
   pageSize: number = 10;
 
-  constructor(private hospitalService: HospitalService,private notification:NzNotificationService) {}
+  constructor(
+    private hospitalService: HospitalService,
+    private notification: NzNotificationService
+  ) {}
 
   ngOnInit() {
     this.loadHospitals();
   }
-
+  loadUserHospital(hospital: HospitalDto & { expand: boolean; userHospital: UserDto[] }) {
+    this.hospitalService.getUserByHospitalIdByHospitalId(hospital.id).subscribe({
+      next: response => {
+        hospital.userHospital = response;
+      },
+      error: err => {
+        console.log(err);
+      },
+    });
+  }
+  onExpandChange(hospital: HospitalDto & { expand: boolean; userHospital: UserDto[] }) {
+    if (hospital.expand) {
+      this.hospitals.data.map(x => {
+        if(x!==hospital)
+        x.expand =false
+      });
+      console.log(this.hospitals)
+      this.loadUserHospital(hospital);
+    }
+  }
   loadHospitals() {
     const query: BaseGetPagingRequest = {
       index: this.currentPage - 1,
@@ -46,9 +72,13 @@ export class ListHospitalComponent implements OnInit{
 
     this.hospitalService.getHospitalDapperList(query).subscribe({
       next: response => {
-       
-        this.hospitals = response;
-        console.log(this.hospitals)
+        this.hospitals.data = response.data.map(data => ({
+          ...data,
+          expand: false,
+          userHospital: [],
+        }));
+        this.hospitals.totalPage = response.totalPage;
+        console.log(this.hospitals);
       },
       error: err => {
         console.log(err);
@@ -56,10 +86,7 @@ export class ListHospitalComponent implements OnInit{
     });
   }
 
-  trackById(
-    index: number,
-    item: HospitalDto
-  ): any {
+  trackById(index: number, item: HospitalDto): any {
     return item.id;
   }
 
@@ -84,8 +111,7 @@ export class ListHospitalComponent implements OnInit{
   handleVisibilityAddUserChange(event: VisibleAdd) {
     this.isVisibleAddUserHospital.showAddForm = event.showAddForm;
     this.isVisibleAddUserHospital.addStatus = event.addStatus;
-    if (this.isVisibleAddUserHospital.addStatus) 
-      this.loadHospitals();
+    if (this.isVisibleAddUserHospital.addStatus) this.loadHospitals();
     else {
       console.log('khong lam gi');
     }
@@ -93,35 +119,32 @@ export class ListHospitalComponent implements OnInit{
   onExport() {
     this.isVisibleAddUserHospital.addStatus = true;
   }
-  onDelete(id:number){
-    this.hospitalService.delete(id).subscribe(
-      {
-        next:(response)=>{
-          this.notification.success('Thành công', `Xoá thành công ${response}`);
-          this.loadHospitals();
-        },
-        error:(error)=>{
-          this.notification.success('Thất bại', `Xoá thất bại ${error}`);
-        }
-      }
-    )
+  onDelete(id: number) {
+    this.hospitalService.delete(id).subscribe({
+      next: response => {
+        this.notification.success('Thành công', `Xoá thành công ${response}`);
+        this.loadHospitals();
+      },
+      error: error => {
+        this.notification.success('Thất bại', `Xoá thất bại ${error}`);
+      },
+    });
   }
-  onEdit(id:number){
+  onEdit(id: number) {
     this.selectedId = id;
     this.isVisibleUpdateHospital.showUpdateForm = true;
   }
-  onAddUser(id:number){
+  onAddUser(id: number) {
     this.selectedIdAddUser = id;
     this.isVisibleAddUserHospital.showAddForm = true;
   }
-  handleVisibilityUpdateChange(event: VisibleUpdate){
+  handleVisibilityUpdateChange(event: VisibleUpdate) {
     this.isVisibleUpdateHospital.showUpdateForm = event.showUpdateForm;
     this.isVisibleUpdateHospital.updateStatus = event.updateStatus;
-    if (this.isVisibleUpdateHospital.updateStatus) 
-      this.loadHospitals();
+    if (this.isVisibleUpdateHospital.updateStatus) this.loadHospitals();
     else {
       console.log('khong lam gi');
     }
-    this.selectedId = null
+    this.selectedId = null;
   }
 }

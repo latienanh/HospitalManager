@@ -31,7 +31,7 @@ namespace HospitalManager.Hub
         {
             await Clients.Group("Admin").SendAsync("ReceiveNotification", message);
         }
-
+     
         public override async Task OnDisconnectedAsync(Exception exception)
         {
 

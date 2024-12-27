@@ -13,7 +13,7 @@ export class HomeComponent {
     return this.authService.isAuthenticated;
   }
 
-  constructor(private authService: AuthService,private notificationAddPatientService: NotificationAddPatientService) {}
+  constructor(private authService: AuthService) {}
 
   login() {
     this.authService.navigateToLogin();

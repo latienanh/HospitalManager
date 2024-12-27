@@ -1,10 +1,10 @@
 import type { BaseGetPagingRequest } from '../../common/models';
 
 export interface GetPagingDistrictRequest extends BaseGetPagingRequest {
-  provinceCode: number;
+  provinceCode?: number;
 }
 
 export interface GetPagingWardRequest extends BaseGetPagingRequest {
-  districtCode: number;
-  provinceCode: number;
+  districtCode?: number;
+  provinceCode?: number;
 }

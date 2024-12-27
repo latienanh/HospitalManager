@@ -20,7 +20,7 @@
     
   </div>
   
-  <nz-table #nestedTable [nzData]="districts.data" [nzTotal]="pageSize * districts.totalPage" [nzPageIndex]="currentPage"
+  <nz-table #nestedTable [nzData]="wards.data" [nzTotal]="pageSize * wards.totalPage" [nzPageIndex]="currentPage"
     (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách xã'">
   
     <thead>
@@ -35,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let data of wards.data; trackBy: trackById">
+      <ng-container *ngFor="let data of nestedTable.data; trackBy: trackById">
         <tr>
           <td>{{ data.code }}</td>
           <td>{{ data.name }}</td>

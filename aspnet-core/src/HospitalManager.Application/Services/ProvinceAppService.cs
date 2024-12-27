@@ -8,6 +8,7 @@ using HospitalManager.Dtos.Common;
 using HospitalManager.Dtos.Request.CreateUpdate;
 using HospitalManager.Dtos.Response;
 using HospitalManager.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -18,7 +19,7 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 
 namespace HospitalManager.Services;
-
+[Authorize("Province_Manager")]
 public class ProvinceAppService(
     IRepository<Province, int> repository,
     IProvinceDapperRepository provinceDapperRepository,
@@ -28,10 +29,12 @@ public class ProvinceAppService(
         repository), IProvinceService
 {
     [HttpPost]
+    [Authorize("Province_GetPaging")]
     public async Task<GetPagingResponse<ProvinceDto>> GetProvinceDapperListAsync([FromBody] BaseGetPagingRequest request)
     {
-        var provinces = await provinceDapperRepository.GetPagingAsync(request.Index, request.Size, "Where isDeleted = false");
-        var totalPage = await provinceDapperRepository.GetCountAsync(request.Size);
+        string whereClause = "WHERE IsDeleted = FALSE";
+        var provinces = await provinceDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
+        var totalPage = await provinceDapperRepository.GetCountAsync(request.Size, whereClause);
         var mappedProvinces = ObjectMapper.Map<List<Province>, List<ProvinceDto>>(provinces);
         var result = new GetPagingResponse<ProvinceDto>
         {
@@ -40,12 +43,12 @@ public class ProvinceAppService(
         };
         return result;
     }
-
+    [Authorize("Province_Delete")]
     public override async Task DeleteAsync(int id)
     {
         await Repository.DeleteAsync(id);
     }
-
+    [Authorize("Province_Create")]
     public override async Task<ProvinceDto> CreateAsync(CreateUpdateProvinceDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
@@ -57,6 +60,7 @@ public class ProvinceAppService(
 
         return await base.CreateAsync(input);
     }
+    [Authorize("Province_Update")]
     public override async Task<ProvinceDto> UpdateAsync(int id, CreateUpdateProvinceDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
@@ -80,6 +84,7 @@ public class ProvinceAppService(
     }
 
     [HttpPost]
+    [Authorize("Province_Import")]
     public async Task<bool> ImportExcel(IFormFile file, bool isUpdate)
     {
         if (file == null || file.Length == 0)

@@ -1,5 +1,5 @@
 
-export interface StringSegment {
+export interface StringSegment  {
   buffer?: string;
   offset: number;
   length: number;

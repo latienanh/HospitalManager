@@ -16,29 +16,40 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
 using OfficeOpenXml;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalManager.Services;
-
+[Authorize("Ward_Manager")]
 public class WardAppService(
     IRepository<Ward, int> repository,
     IWardDapperRepository WardDapperRepository,
     ExcelService excelService
 )
+
     : CrudAppService<Ward, WardDto, int, PagedAndSortedResultRequestDto, CreateUpdateWardDto>(
         repository), IWardService
 {
-
+    [Authorize("Ward_Delete")]
     public override async Task DeleteAsync(int id)
     {
         await Repository.DeleteAsync(id);
     }
 
     [HttpPost]
+    [Authorize("Ward_GetPaging")]
     public async Task<GetPagingResponse<WardDto>> GetWardDapperListAsync([FromBody] GetPagingWardRequest request)
     {
-        var Wards = await WardDapperRepository.GetPagingAsync(request.Index, request.Size,
-            $"WHERE ProvinceCode ={request.ProvinceCode} and DistrictCode = {request.DistrictCode} and IsDeleted =FALSE");
-        var totalPage = await WardDapperRepository.GetCountAsync(request.Size, $"and ProvinceCode = {request.ProvinceCode} and DistrictCode = {request.DistrictCode}");
+        string whereClause = "WHERE IsDeleted = FALSE";
+        if (request.ProvinceCode != null)
+        {
+            whereClause += $" AND ProvinceCode = {request.ProvinceCode}";
+        }
+        if (request.DistrictCode != null)
+        {
+            whereClause += $" AND DistrictCode = {request.DistrictCode}";
+        }
+        var Wards = await WardDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
+        var totalPage = await WardDapperRepository.GetCountAsync(request.Size, whereClause);
         var mappedWards = ObjectMapper.Map<List<Ward>, List<WardDto>>(Wards);
         var result = new GetPagingResponse<WardDto>
         {
@@ -47,7 +58,7 @@ public class WardAppService(
         };
         return result;
     }
-
+    [Authorize("Ward_Create")]
     public override async Task<WardDto> CreateAsync(CreateUpdateWardDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
@@ -59,7 +70,7 @@ public class WardAppService(
 
         return await base.CreateAsync(input);
     }
-
+    [Authorize("Ward_Update")]
     public override async Task<WardDto> UpdateAsync(int id, CreateUpdateWardDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
@@ -73,6 +84,7 @@ public class WardAppService(
     }
 
     [HttpPost]
+
     public async Task<FileStreamResult> ExportExcel()
     {
         var fileStream = await excelService.ExportExcelFileAsync();
@@ -85,6 +97,7 @@ public class WardAppService(
     }
 
     [HttpPost]
+    [Authorize("Ward_Import")]
     public async Task<bool> ImportExcel(IFormFile file, bool isUpdate)
     {
         if (file == null || file.Length == 0)

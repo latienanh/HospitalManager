@@ -12,5 +12,6 @@ namespace HospitalManager.Abstractions;
 public interface IHospitalDapperRepository : IBaseDapperRepository<Hospital>
 {
     Task<IEnumerable<IdentityUser>> GetUserNotInHospital(int skip, int take);
+
     Task<int> GetCountUserNotInHospitalAsync(int take);
 }

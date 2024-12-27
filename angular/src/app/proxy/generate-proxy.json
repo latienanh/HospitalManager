@@ -1710,7 +1710,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.PatientDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.PatientDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IPatientService"
             },
             "DeleteAsyncById": {
@@ -1747,7 +1747,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "CreateAsyncByInput": {
@@ -1784,7 +1784,7 @@
                 "type": "HospitalManager.Dtos.Response.PatientDto",
                 "typeSimple": "HospitalManager.Dtos.Response.PatientDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.PatientDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdatePatientDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -1841,8 +1841,38 @@
                 "type": "HospitalManager.Dtos.Response.PatientDto",
                 "typeSimple": "HospitalManager.Dtos.Response.PatientDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.PatientDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdatePatientDto>"
+            },
+            "HospitalPatientCountReport": {
+              "uniqueName": "HospitalPatientCountReport",
+              "name": "HospitalPatientCountReport",
+              "httpMethod": "POST",
+              "url": "api/app/patient/hospital-patient-count-report",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.IEnumerable<HospitalManager.Dtos.Response.HospitalPatientCountDto>",
+                "typeSimple": "[HospitalManager.Dtos.Response.HospitalPatientCountDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "PatientManager.Services.PatientService"
+            },
+            "ProvincePatientCountReport": {
+              "uniqueName": "ProvincePatientCountReport",
+              "name": "ProvincePatientCountReport",
+              "httpMethod": "POST",
+              "url": "api/app/patient/province-patient-count-report",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.IEnumerable<HospitalManager.Dtos.Response.ProvincePatientCountDto>",
+                "typeSimple": "[HospitalManager.Dtos.Response.ProvincePatientCountDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "PatientManager.Services.PatientService"
             },
             "GetAsyncById": {
               "uniqueName": "GetAsyncById",
@@ -1878,7 +1908,7 @@
                 "type": "HospitalManager.Dtos.Response.PatientDto",
                 "typeSimple": "HospitalManager.Dtos.Response.PatientDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.PatientDto,HospitalManager.Dtos.Response.PatientDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -1939,7 +1969,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.PatientDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.PatientDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.PatientDto,HospitalManager.Dtos.Response.PatientDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -2104,7 +2134,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "GetDistrictDapperListAsyncByRequest": {
@@ -2141,7 +2171,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.DistrictDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.DistrictDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IDistrictService"
             },
             "CreateAsyncByInput": {
@@ -2178,7 +2208,7 @@
                 "type": "HospitalManager.Dtos.Response.DistrictDto",
                 "typeSimple": "HospitalManager.Dtos.Response.DistrictDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.DistrictDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateDistrictDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -2235,7 +2265,7 @@
                 "type": "HospitalManager.Dtos.Response.DistrictDto",
                 "typeSimple": "HospitalManager.Dtos.Response.DistrictDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.DistrictDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateDistrictDto>"
             },
             "ExportExcel": {
@@ -2250,7 +2280,7 @@
                 "type": "Microsoft.AspNetCore.Mvc.FileStreamResult",
                 "typeSimple": "Microsoft.AspNetCore.Mvc.FileStreamResult"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.DistrictAppService"
             },
             "ImportExcelByFileAndIsUpdate": {
@@ -2307,7 +2337,7 @@
                 "type": "System.Boolean",
                 "typeSimple": "boolean"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.DistrictAppService"
             },
             "GetAsyncById": {
@@ -2344,7 +2374,7 @@
                 "type": "HospitalManager.Dtos.Response.DistrictDto",
                 "typeSimple": "HospitalManager.Dtos.Response.DistrictDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.DistrictDto,HospitalManager.Dtos.Response.DistrictDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -2405,7 +2435,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.DistrictDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.DistrictDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.DistrictDto,HospitalManager.Dtos.Response.DistrictDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -2570,7 +2600,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.HospitalDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.HospitalDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IHospitalService"
             },
             "GetUserNotInHospitalDapperListAsyncByRequest": {
@@ -2607,7 +2637,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.UserDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.UserDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.HospitalService"
             },
             "DeleteAsyncById": {
@@ -2644,7 +2674,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "CreateAsyncByInput": {
@@ -2681,7 +2711,7 @@
                 "type": "HospitalManager.Dtos.Response.HospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.HospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.HospitalDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateHospitalDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -2738,8 +2768,45 @@
                 "type": "HospitalManager.Dtos.Response.HospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.HospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.HospitalDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateHospitalDto>"
+            },
+            "GetUserByHospitalIdByHospitalId": {
+              "uniqueName": "GetUserByHospitalIdByHospitalId",
+              "name": "GetUserByHospitalId",
+              "httpMethod": "GET",
+              "url": "api/app/hospital/user-by-hospital-id/{HospitalId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "HospitalId",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "HospitalId",
+                  "name": "HospitalId",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.IEnumerable<HospitalManager.Dtos.Response.UserDto>",
+                "typeSimple": "[HospitalManager.Dtos.Response.UserDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "HospitalManager.Services.HospitalService"
             },
             "GetAsyncById": {
               "uniqueName": "GetAsyncById",
@@ -2775,7 +2842,7 @@
                 "type": "HospitalManager.Dtos.Response.HospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.HospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.HospitalDto,HospitalManager.Dtos.Response.HospitalDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -2836,7 +2903,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.HospitalDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.HospitalDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.HospitalDto,HospitalManager.Dtos.Response.HospitalDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -3001,7 +3068,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.ProvinceDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.ProvinceDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IProvinceService"
             },
             "DeleteAsyncById": {
@@ -3038,7 +3105,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "CreateAsyncByInput": {
@@ -3075,7 +3142,7 @@
                 "type": "HospitalManager.Dtos.Response.ProvinceDto",
                 "typeSimple": "HospitalManager.Dtos.Response.ProvinceDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.ProvinceDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateProvinceDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -3132,7 +3199,7 @@
                 "type": "HospitalManager.Dtos.Response.ProvinceDto",
                 "typeSimple": "HospitalManager.Dtos.Response.ProvinceDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.ProvinceDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateProvinceDto>"
             },
             "ExportExcel": {
@@ -3147,7 +3214,7 @@
                 "type": "Microsoft.AspNetCore.Mvc.FileStreamResult",
                 "typeSimple": "Microsoft.AspNetCore.Mvc.FileStreamResult"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.ProvinceAppService"
             },
             "ImportExcelByFileAndIsUpdate": {
@@ -3204,7 +3271,7 @@
                 "type": "System.Boolean",
                 "typeSimple": "boolean"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.ProvinceAppService"
             },
             "GetAsyncById": {
@@ -3241,7 +3308,7 @@
                 "type": "HospitalManager.Dtos.Response.ProvinceDto",
                 "typeSimple": "HospitalManager.Dtos.Response.ProvinceDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.ProvinceDto,HospitalManager.Dtos.Response.ProvinceDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -3302,7 +3369,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.ProvinceDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.ProvinceDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.ProvinceDto,HospitalManager.Dtos.Response.ProvinceDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -3467,7 +3534,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "GetHospitalByUserIdByUserId": {
@@ -3504,7 +3571,7 @@
                 "type": "System.Int32?",
                 "typeSimple": "number?"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IUserHospitalService"
             },
             "CreateAsyncByInput": {
@@ -3541,7 +3608,7 @@
                 "type": "HospitalManager.Dtos.Response.UserHospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.UserHospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.UserHospitalDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateUserHospitalDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -3598,7 +3665,7 @@
                 "type": "HospitalManager.Dtos.Response.UserHospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.UserHospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.UserHospitalDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateUserHospitalDto>"
             },
             "GetAsyncById": {
@@ -3635,7 +3702,7 @@
                 "type": "HospitalManager.Dtos.Response.UserHospitalDto",
                 "typeSimple": "HospitalManager.Dtos.Response.UserHospitalDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.UserHospitalDto,HospitalManager.Dtos.Response.UserHospitalDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -3696,7 +3763,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.UserHospitalDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.UserHospitalDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.UserHospitalDto,HospitalManager.Dtos.Response.UserHospitalDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -3861,7 +3928,7 @@
                 "type": "System.Void",
                 "typeSimple": "System.Void"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
             "GetWardDapperListAsyncByRequest": {
@@ -3898,7 +3965,7 @@
                 "type": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.WardDto>",
                 "typeSimple": "HospitalManager.Dtos.Response.GetPagingResponse<HospitalManager.Dtos.Response.WardDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Abstractions.IWardService"
             },
             "CreateAsyncByInput": {
@@ -3935,7 +4002,7 @@
                 "type": "HospitalManager.Dtos.Response.WardDto",
                 "typeSimple": "HospitalManager.Dtos.Response.WardDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.ICreateAppService<HospitalManager.Dtos.Response.WardDto,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateWardDto>"
             },
             "UpdateAsyncByIdAndInput": {
@@ -3992,7 +4059,7 @@
                 "type": "HospitalManager.Dtos.Response.WardDto",
                 "typeSimple": "HospitalManager.Dtos.Response.WardDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IUpdateAppService<HospitalManager.Dtos.Response.WardDto,System.Int32,HospitalManager.Dtos.Request.CreateUpdate.CreateUpdateWardDto>"
             },
             "ExportExcel": {
@@ -4007,7 +4074,7 @@
                 "type": "Microsoft.AspNetCore.Mvc.FileStreamResult",
                 "typeSimple": "Microsoft.AspNetCore.Mvc.FileStreamResult"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.WardAppService"
             },
             "ImportExcelByFileAndIsUpdate": {
@@ -4064,7 +4131,7 @@
                 "type": "System.Boolean",
                 "typeSimple": "boolean"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "HospitalManager.Services.WardAppService"
             },
             "GetAsyncById": {
@@ -4101,7 +4168,7 @@
                 "type": "HospitalManager.Dtos.Response.WardDto",
                 "typeSimple": "HospitalManager.Dtos.Response.WardDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.WardDto,HospitalManager.Dtos.Response.WardDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             },
             "GetListAsyncByInput": {
@@ -4162,7 +4229,7 @@
                 "type": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.WardDto>",
                 "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<HospitalManager.Dtos.Response.WardDto>"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<HospitalManager.Dtos.Response.WardDto,HospitalManager.Dtos.Response.WardDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
             }
           }
@@ -11741,8 +11808,65 @@
         }
       ]
     },
-    "HospitalManager.Dtos.Request.GetPaging.GetPagingDistrictRequest": {
-      "baseType": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+    "HospitalManager.Dtos.Response.HospitalPatientCountDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "HospitalId",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Code",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CountPatient",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "HospitalManager.Dtos.Response.ProvincePatientCountDto": {
+      "baseType": null,
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,
@@ -11753,6 +11877,51 @@
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CountPatient",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "HospitalManager.Dtos.Request.GetPaging.GetPagingDistrictRequest": {
+      "baseType": "HospitalManager.Dtos.Common.BaseGetPagingRequest",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ProvinceCode",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12539,8 +12708,8 @@
         {
           "name": "DistrictCode",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12551,8 +12720,8 @@
         {
           "name": "ProvinceCode",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

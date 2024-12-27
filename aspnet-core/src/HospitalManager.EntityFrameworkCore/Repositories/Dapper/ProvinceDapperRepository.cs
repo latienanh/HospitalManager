@@ -65,7 +65,6 @@ public class ProvinceDapperRepository(IDbContextProvider<HospitalManagerDbContex
             var query = $@"
                     SELECT COUNT(*)
                     FROM provinces
-                    WHERE IsDeleted = FALSE
                     {additionalConditions}";
 
             var count = await dbConnection.ExecuteScalarAsync<int>(

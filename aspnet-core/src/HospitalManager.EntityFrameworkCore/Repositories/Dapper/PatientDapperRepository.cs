@@ -9,6 +9,7 @@ using HospitalManager.EntityFrameworkCore;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Dapper;
+using HospitalManager.Dtos.Response;
 
 namespace HospitalManager.Repositories.Dapper;
 
@@ -63,7 +64,6 @@ public class PatientDapperRepository(IDbContextProvider<HospitalManagerDbContext
             var query = $@"
                      SELECT COUNT(*)
                      FROM patients
-                     WHERE IsDeleted = FALSE
                      {additionalConditions}";
 
             var count = await dbConnection.ExecuteScalarAsync<int>(
@@ -72,6 +72,68 @@ public class PatientDapperRepository(IDbContextProvider<HospitalManagerDbContext
             );
             var result = (int)Math.Ceiling((decimal)count / take);
             return result;
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<HospitalPatientCountDto>> HospitalPatientCountReportDapper()
+    {
+        try
+        {
+            var dbConnection = await GetDbConnectionAsync();
+
+
+            var query = $@"
+                     SELECT patients.HospitalId,hospitals.`Code`,hospitals.`Name` ,COUNT(*) as CountPatient
+                        FROM patients
+                        JOIN hospitals 
+                        ON patients.HospitalId = hospitals.Id
+                        WHERE DATE(patients.CreationTime) = CURDATE() and patients.IsDeleted = FALSE
+
+                        GROUP BY patients.HospitalId,hospitals.`Code`,hospitals.`Name`";
+
+            var data = await dbConnection.QueryAsync<HospitalPatientCountDto>(
+                query,
+                transaction: await GetDbTransactionAsync()
+            );
+            
+            return data;
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại thông tin lỗi chi tiết
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<ProvincePatientCountDto>> ProvincePatientCountReportDapper()
+    {
+        try
+        {
+            var dbConnection = await GetDbConnectionAsync();
+
+            var query = $@"
+                    SELECT patients.ProvinceCode,provinces.`Name` ,COUNT(*) as CountPatient
+                    FROM patients
+                    JOIN provinces 
+                    ON patients.ProvinceCode = provinces.`Code`
+                    WHERE DATE(patients.CreationTime) = CURDATE() and patients.IsDeleted = FALSE
+
+                    GROUP BY patients.ProvinceCode,provinces.`Name`";
+
+            var data = await dbConnection.QueryAsync<ProvincePatientCountDto>(
+                query,
+                transaction: await GetDbTransactionAsync()
+            );
+            return data;
         }
         catch (Exception ex)
         {

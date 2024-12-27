@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HospitalManager.Application.Contracts\HospitalManager.Application.Contracts.csproj" />
     <ProjectReference Include="..\HospitalManager.Domain.Shared\HospitalManager.Domain.Shared.csproj" />
   </ItemGroup>
 

@@ -7,5 +7,5 @@ namespace HospitalManager.Dtos.Request.GetPaging;
 
 public class GetPagingDistrictRequest : BaseGetPagingRequest
 {
-    public int ProvinceCode { get; set; }
+    public int? ProvinceCode { get; set; }
 }

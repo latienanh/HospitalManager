@@ -55,6 +55,14 @@ export class HospitalService {
     { apiName: this.apiName,...config });
   
 
+  getUserByHospitalIdByHospitalId = (HospitalId: number, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, UserDto[]>({
+      method: 'GET',
+      url: `/api/app/hospital/user-by-hospital-id/${HospitalId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getUserNotInHospitalDapperList = (request: BaseGetPagingRequest, config?: Partial<Rest.Config>) =>
     this.restService.request<any, GetPagingResponse<UserDto>>({
       method: 'POST',

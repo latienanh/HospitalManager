@@ -8,6 +8,7 @@ using HospitalManager.Dtos.Common;
 using HospitalManager.Dtos.Request.CreateUpdate;
 using HospitalManager.Dtos.Response;
 using HospitalManager.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -18,18 +19,23 @@ using Volo.Abp.ObjectMapping;
 
 namespace HospitalManager.Services
 {
+    [Authorize("Hospital_Manager")]
     public class HospitalService(
         IRepository<Hospital, int> repository,
-        IHospitalDapperRepository hospitalDapperRepository
+        IHospitalDapperRepository hospitalDapperRepository,
+        IUserDapperRepository userDapperRepository
     )
         : CrudAppService<Hospital, HospitalDto, int, PagedAndSortedResultRequestDto, CreateUpdateHospitalDto>(
             repository), IHospitalService
     {
         [HttpPost]
+        [Authorize("Hospital_GetPaging")]
         public async Task<GetPagingResponse<HospitalDto>> GetHospitalDapperListAsync([FromBody]BaseGetPagingRequest request)
         {
-            var hospitals = await hospitalDapperRepository.GetPagingAsync(request.Index, request.Size, $"WHERE IsDeleted =FALSE");
-            var totalPage = await hospitalDapperRepository.GetCountAsync(request.Size);
+            string whereClause = "WHERE IsDeleted = FALSE";
+          
+            var hospitals = await hospitalDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
+            var totalPage = await hospitalDapperRepository.GetCountAsync(request.Size, whereClause);
             var mappedHospitals = ObjectMapper.Map<List<Hospital>, List<HospitalDto>>(hospitals);
             var result = new GetPagingResponse<HospitalDto>
             {
@@ -39,6 +45,7 @@ namespace HospitalManager.Services
             return result;
         }
         [HttpPost]
+        [Authorize("Hospital_GetUserNotInHospital")]
         public async Task<GetPagingResponse<UserDto>> GetUserNotInHospitalDapperListAsync([FromBody] BaseGetPagingRequest request)
         {
             var users = await hospitalDapperRepository.GetUserNotInHospital(request.Index, request.Size);
@@ -51,12 +58,13 @@ namespace HospitalManager.Services
             };
             return result;
         }
+        [Authorize("Hospital_Delete")]
         public override async Task DeleteAsync(int id)
         {
             await Repository.DeleteAsync(id);
         }
-     
 
+        [Authorize("Hospital_Create")]
         public override async Task<HospitalDto> CreateAsync(CreateUpdateHospitalDto input)
         {
             try
@@ -77,6 +85,7 @@ namespace HospitalManager.Services
             }
         
         }
+        [Authorize("Hospital_Update")]
         public override async Task<HospitalDto> UpdateAsync(int id, CreateUpdateHospitalDto input)
         {
             var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
@@ -86,6 +95,13 @@ namespace HospitalManager.Services
                     .WithData("message", $"Mã: {input.Code} đã tồn tại trong hệ thống");
             }
             return await base.UpdateAsync(id, input);
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUserByHospitalId(int HospitalId)
+        {
+            var users = await userDapperRepository.GetUserInHospital(HospitalId);
+            var usersMap = ObjectMapper.Map<IEnumerable<IdentityUser>, IEnumerable<UserDto>>(users); 
+            return usersMap;
         }
     }
 }

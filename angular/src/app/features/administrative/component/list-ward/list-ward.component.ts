@@ -56,9 +56,16 @@ export class ListWardComponent implements OnInit {
     });
 
     this.loadProvinces();
+    this.loadWards();
     this.form.get('selectedValueProvince').valueChanges.subscribe(value => {
       this.form.get('selectedValueDistrict').setValue(null);
+      if(!value)
+      {
+        this.districts.data = []
+      }
+        
       this.loadDistricts(value);
+      this.loadWards(value);
     });
     this.form.get('selectedValueDistrict').valueChanges.subscribe(value => {
       this.currentPage =1 
@@ -102,21 +109,18 @@ export class ListWardComponent implements OnInit {
       },
     });
   }
-  loadWards(provinceCode:number,districtCode:number) {
-    if(provinceCode==null||districtCode==null)
-      {
-        return
-      }
+  loadWards(provinceCode?:number,districtCode?:number) {
+    console.log(provinceCode,districtCode)
     const query: GetPagingWardRequest = {
-      index: 0,
+      index: this.currentPage-1,
       size: this.pageSize,
       provinceCode:provinceCode,
       districtCode:districtCode
     };
     this.wardService.getWardDapperList(query).subscribe({
       next: response => {
-        console.log(response)
         this.wards = response;
+        console.log(this.wards)
       },
       error: err => {
         console.log(err);
@@ -125,6 +129,7 @@ export class ListWardComponent implements OnInit {
   }
   onPageChange(page: number): void {
     this.currentPage = page;
+    console.log(this.currentPage)
     this.loadWards(this.form.value.selectedValueProvince,this.form.value.selectedValueDistrict);
   }
 

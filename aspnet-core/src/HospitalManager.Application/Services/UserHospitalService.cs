@@ -16,21 +16,22 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalManager.Services
 {
+    [Authorize("UserHospital_Manager")]
     public class UserHospitalService(
     IRepository<UserHospital, int> repository
 )
     : CrudAppService<UserHospital, UserHospitalDto, int, PagedAndSortedResultRequestDto, CreateUpdateUserHospitalDto>(
         repository), IUserHospitalService
     {
-
+        [Authorize("UserHospital_Delete")]
         public override async Task DeleteAsync(int id)
         {
             await Repository.DeleteAsync(id);
         }
-
         public async Task<int?> GetHospitalByUserId(Guid? userId)
         {
             if (userId == null)

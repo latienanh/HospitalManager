@@ -64,7 +64,6 @@ public class DistrictDapperRepository(IDbContextProvider<HospitalManagerDbContex
             var query = $@"
                     SELECT COUNT(*)
                     FROM districts
-                    WHERE IsDeleted = FALSE
                     {additionalConditions}";
 
             var count = await dbConnection.ExecuteScalarAsync<int>(

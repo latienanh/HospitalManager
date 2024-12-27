@@ -21,27 +21,36 @@ using Volo.Abp.ObjectMapping;
 using OfficeOpenXml;
 using Quartz.Job;
 using Volo.Abp.Emailing;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HospitalManager.Services;
 
+[Authorize("District_Manager")]
 public class DistrictAppService(IRepository<District, int> repository,
     IDistrictDapperRepository districtDapperRepository,
-    ExcelService excelService,
-    IEmailSender emailSender
+    ExcelService excelService
 )
     : CrudAppService<District, DistrictDto, int, PagedAndSortedResultRequestDto, CreateUpdateDistrictDto>(
         repository), IDistrictService
 {
-
+    [Authorize("District_Delete")]
     public override async Task DeleteAsync(int id)
     {
         await Repository.DeleteAsync(id);
     }
     [HttpPost]
+    [Authorize("District_GetPaging")]
     public async Task<GetPagingResponse<DistrictDto>> GetDistrictDapperListAsync([FromBody] GetPagingDistrictRequest request)
     {
-        var districts = await districtDapperRepository.GetPagingAsync(request.Index, request.Size, $"WHERE ProvinceCode = {request.ProvinceCode} and IsDeleted =FALSE");
-        var totalPage = await districtDapperRepository.GetCountAsync(request.Size,$"and ProvinceCode = {request.ProvinceCode}");
+        string whereClause = "WHERE IsDeleted = FALSE";
+        if (request.ProvinceCode!=null)
+        {
+            whereClause += $" AND ProvinceCode = {request.ProvinceCode}";
+        }
+        var districts = await districtDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
+        var totalPage = await districtDapperRepository.GetCountAsync(request.Size,whereClause);
         var mappedDistricts = ObjectMapper.Map<List<District>, List<DistrictDto>>(districts);
         var result = new GetPagingResponse<DistrictDto>
         {
@@ -50,7 +59,7 @@ public class DistrictAppService(IRepository<District, int> repository,
         };
         return result;
     }
-
+    [Authorize("District_Create")]
     public override async Task<DistrictDto> CreateAsync(CreateUpdateDistrictDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
@@ -60,7 +69,7 @@ public class DistrictAppService(IRepository<District, int> repository,
                 .WithData("message", $"Mã: {input.Code} đã tồn tại trong hệ thống");
         }
         return await base.CreateAsync(input);
-    }
+    }[Authorize("District_Update")]
     public override async Task<DistrictDto> UpdateAsync(int id, CreateUpdateDistrictDto input)
     {
         var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
@@ -84,6 +93,7 @@ public class DistrictAppService(IRepository<District, int> repository,
     }
 
     [HttpPost]
+    [Authorize("District_Import")]
     public async Task<bool> ImportExcel(IFormFile file, bool isUpdate)
     {
         if (file == null || file.Length == 0)

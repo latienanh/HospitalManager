@@ -6,12 +6,25 @@ export interface GetPagingResponse<T> {
   totalPage: number;
 }
 
+export interface HospitalPatientCountDto {
+  hospitalId: number;
+  code: number;
+  name?: string;
+  countPatient: number;
+}
+
 export interface PatientDto extends BaseDto<number> {
   provinceCode: number;
   districtCode: number;
   wardCode: number;
   address?: string;
   hospitalId: number;
+}
+
+export interface ProvincePatientCountDto {
+  provinceCode: number;
+  name?: string;
+  countPatient: number;
 }
 
 export interface DistrictDto extends CommonAdministrativeDto {

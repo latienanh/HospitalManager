@@ -3,7 +3,7 @@ import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.cor
 import { Injectable } from '@angular/core';
 import type { BaseGetPagingRequest } from '../../dtos/common/models';
 import type { CreateUpdatePatientDto } from '../../dtos/request/create-update/models';
-import type { GetPagingResponse, PatientDto } from '../../dtos/response/models';
+import type { GetPagingResponse, HospitalPatientCountDto, PatientDto, ProvincePatientCountDto } from '../../dtos/response/models';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +51,22 @@ export class PatientService {
       method: 'POST',
       url: '/api/app/patient/get-patient-dapper-list',
       body: request,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  hospitalPatientCountReport = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, HospitalPatientCountDto[]>({
+      method: 'POST',
+      url: '/api/app/patient/hospital-patient-count-report',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  provincePatientCountReport = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ProvincePatientCountDto[]>({
+      method: 'POST',
+      url: '/api/app/patient/province-patient-count-report',
     },
     { apiName: this.apiName,...config });
   

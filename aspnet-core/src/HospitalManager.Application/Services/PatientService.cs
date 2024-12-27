@@ -19,9 +19,11 @@ using Volo.Abp;
 using HospitalManager.Services;
 using Microsoft.AspNetCore.SignalR;
 using Volo.Abp.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PatientManager.Services
 {
+    [Authorize("Patient_Manager")]
     public class PatientService(
         IRepository<Patient, int> repository,
         IUserHospitalService userHospitalService,
@@ -34,6 +36,7 @@ namespace PatientManager.Services
             repository), IPatientService
     {
         [HttpPost]
+        [Authorize("Patient_GetPaging")]
         public async Task<GetPagingResponse<PatientDto>> GetPatientDapperListAsync([FromBody] BaseGetPagingRequest request)
         {
             var resultHosspitalId = await userHospitalService.GetHospitalByUserId(currentUser.Id);
@@ -43,8 +46,10 @@ namespace PatientManager.Services
                     .WithData("message", $"Bạn chưa có bệnh viện nào ib admin để được vào bệnh viện");
 
             }
-            var patients = await PatientDapperRepository.GetPagingAsync(request.Index, request.Size, $"WHERE IsDeleted =FALSE AND HospitalId = {resultHosspitalId} ");
-            var totalPage = await PatientDapperRepository.GetCountAsync(request.Size);
+            string whereClause = $"WHERE IsDeleted =FALSE AND HospitalId = {resultHosspitalId} ";
+            
+            var patients = await PatientDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
+            var totalPage = await PatientDapperRepository.GetCountAsync(request.Size, whereClause);
             var mappedPatients = ObjectMapper.Map<List<Patient>, List<PatientDto>>(patients);
             var result = new GetPagingResponse<PatientDto>
             {
@@ -53,24 +58,25 @@ namespace PatientManager.Services
             };
             return result;
         }
+        [Authorize("Patient_Delete")]
         public override async Task DeleteAsync(int id)
         {
             await Repository.DeleteAsync(id);
         }
 
-
+        [Authorize("Patient_Create")]
         public override async Task<PatientDto> CreateAsync(CreateUpdatePatientDto input)
         {
             var test = currentUser.Roles != null && currentUser.Roles.Contains("UserHospital");
-            var resultHosspitalId = await userHospitalService.GetHospitalByUserId(currentUser.Id);
-            if (resultHosspitalId == null)
+            var resultHospitalId = await userHospitalService.GetHospitalByUserId(currentUser.Id);
+            if (resultHospitalId == null)
             {
                 throw new BusinessException()
                     .WithData("message", $"Bạn chưa có bệnh viện nào ib admin để được vào bệnh viện");
 
             }
 
-            input.HospitalId = resultHosspitalId;
+            input.HospitalId = resultHospitalId;
             var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
             if (checkCode != null)
             {
@@ -83,17 +89,18 @@ namespace PatientManager.Services
                 $"Đã thêm mới 1 bệnh nhân là {result.Name} vào lúc {result.CreationTime}.");
             return result ;
         }
+        [Authorize("Patient_Update")]
         public override async Task<PatientDto> UpdateAsync(int id, CreateUpdatePatientDto input)
         {
-            var resultHosspitalId = await userHospitalService.GetHospitalByUserId(currentUser.Id);
-            if (resultHosspitalId == null)
+            var resultHospitalId = await userHospitalService.GetHospitalByUserId(currentUser.Id);
+            if (resultHospitalId == null)
             {
                      throw new BusinessException()
                         .WithData("message", $"Mã: {input.Code} đã tồn tại trong hệ thống");
                 
             }
                   
-            input.HospitalId = resultHosspitalId;
+            input.HospitalId = resultHospitalId;
             var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
             if (checkCode != null)
             {
@@ -102,39 +109,18 @@ namespace PatientManager.Services
             }
             return await base.UpdateAsync(id, input);
         }
-        public async Task<List<HospitalPatientCountDto>> HospitalPatientCountReport()
+        public async Task<IEnumerable<HospitalPatientCountDto>> HospitalPatientCountReport()
         {
-            var today = DateTime.Today;
-            var tomorrow = today.AddDays(1);
-            var newPatientsByHospital = await repository.GetListAsync(x => x.CreationTime >= today && x.CreationTime < tomorrow);
 
-            var groupCountByHospital = newPatientsByHospital
-                .GroupBy(x => x.HospitalId)
-                .Select(group => new HospitalPatientCountDto
-                {
-                    HospitalId = group.Key,
-                    Count = group.Count()
-                })
-                .ToList();
+            var result = await PatientDapperRepository.HospitalPatientCountReportDapper();
 
-            return groupCountByHospital;
+            return result;
         }
-        public async Task<List<ProvincePatientCountDto>> ProvincePatientCountReport()
+    
+        public async Task<IEnumerable<ProvincePatientCountDto>> ProvincePatientCountReport()
         {
-            var today = DateTime.Today;
-            var tomorrow = today.AddDays(1);
-            var newPatientsByProvince = await repository.GetListAsync(x => x.CreationTime >= today && x.CreationTime < tomorrow);
-
-            var groupCountByProvince = newPatientsByProvince
-                .GroupBy(x => x.ProvinceCode)
-                .Select(group => new ProvincePatientCountDto
-                {
-                    ProvinceCode = group.Key,
-                    Count = group.Count()
-                })
-                .ToList();
-
-            return groupCountByProvince;
+           var result = await PatientDapperRepository.ProvincePatientCountReportDapper();
+            return result;
         }
 
 

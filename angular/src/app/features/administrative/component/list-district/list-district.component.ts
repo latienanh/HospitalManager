@@ -45,18 +45,14 @@ export class ListDistrictComponent implements OnInit{
     });
     
     this.loadProvinces();
+    this.loadDistricts();
     this.form.get('selectedValue').valueChanges.subscribe(value => {
       this.currentPage = 1
       this.loadDistricts(value);
-      
     });
   }
 
-  loadDistricts(provincecode:number) {
-    if(provincecode==null)
-    {
-      return
-    }
+  loadDistricts(provincecode?:number) {
     const query: GetPagingDistrictRequest = {
       index: this.currentPage - 1,
       size: this.pageSize,
