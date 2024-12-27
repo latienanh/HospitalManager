@@ -1,33 +1,28 @@
-Tài khoản quản trị viên (Admin)
-Tài khoản 1:
-Tên đăng nhập: admin
-Mật khẩu: 1q2w3E*
-Tài khoản 2:
-Tên đăng nhập: admin2
-Mật khẩu: 1q2w3E*
+## Admin Accounts
 
-Tài khoản có role UserHospital mới vào đc patient
+| Tài khoản | Tên đăng nhập | Mật khẩu  |
+|-----------|---------------|-----------|
+| Admin 1   | admin         | 1q2w3E*   |
+| Admin 2   | admin2        | 1q2w3E*   |
 
-Tài khoản người dùng cho Bệnh viện 1
-Người dùng 1:
-Tên đăng nhập: tienanh
-Mật khẩu: Ta@.123456789
-Người dùng 2:
-Tên đăng nhập: tienanh1
-Mật khẩu: Ta@.123456789
-Người dùng 3:
-Tên đăng nhập: tienanh4
-Mật khẩu: Ta@.123456789
-Người dùng 4:
-Tên đăng nhập: tienanh5
-Mật khẩu: Ta@.123456789
+## User Accounts
 
+### User Accounts for Hospital 1
 
+| Người dùng | Tên đăng nhập | Mật khẩu           |
+|------------|---------------|--------------------|
+| User 1     | tienanh       | Ta@.123456789      |
+| User 2     | tienanh1      | Ta@.123456789      |
+| User 3     | tienanh4      | Ta@.123456789      |
+| User 4     | tienanh5      | Ta@.123456789      |
 
-Tài khoản người dùng cho Bệnh viện 2
-Người dùng 1:
-Tên đăng nhập: tienanh2
-Mật khẩu: Ta@.123456789
-Người dùng 2:
-Tên đăng nhập: tienanh3
-Mật khẩu: Ta@.123456789
+### User Accounts for Hospital 2
+
+| Người dùng | Tên đăng nhập | Mật khẩu           |
+|------------|---------------|--------------------|
+| User 1     | tienanh2      | Ta@.123456789      |
+| User 2     | tienanh3      | Ta@.123456789      |
+
+## Role-Based Access
+
+- Only accounts with the role `UserHospital` can access the `patient` section.
