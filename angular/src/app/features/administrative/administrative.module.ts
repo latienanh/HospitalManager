@@ -27,6 +27,9 @@ import { UpdateProvinceComponent } from './component/update-province/update-prov
 import { UpdateWardComponent } from './component/update-ward/update-ward.component';
 import { ImportDistrictExcelComponent } from './component/import-district-excel/import-district-excel.component';
 import { ImportWardExcelComponent } from './component/import-ward-excel/import-ward-excel.component';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 @NgModule({
   declarations: [
     AddProvinceComponent,
@@ -58,6 +61,9 @@ import { ImportWardExcelComponent } from './component/import-ward-excel/import-w
     NzFormModule,
     NzInputModule,
     NzSelectModule,
+    NzLayoutModule, 
+    NzGridModule,    
+    NzSpaceModule,   
   ],
 })
 export class AdministrativeModule {}

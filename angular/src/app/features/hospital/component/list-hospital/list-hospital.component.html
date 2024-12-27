@@ -1,80 +1,77 @@
 <div>
-  <button nz-button nzType="primary" (click)="onAdd()">Thêm mới bệnh viện</button>
+  <button nz-button nzType="primary" (click)="onAdd()" class="add-button">Thêm mới bệnh viện</button>
+
   <app-add-hospital [isVisibleAddHospital]="isVisibleAddHospital"
     (visibilityChange)="handleVisibilityAddChange($event)">
   </app-add-hospital>
+
+  <!-- Add margin to space out the table from the buttons -->
+  <div class="table-container">
+    <nz-table #nestedTable [nzData]="hospitals.data" [nzTotal]="pageSize * hospitals.totalPage" [nzPageIndex]="currentPage"
+      (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách bệnh viện '">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Mã</th>
+          <th>Tên</th>
+          <th>Mã tỉnh</th>
+          <th>Mã huyện</th>
+          <th>Mã xã</th>
+          <th>Địa chỉ</th>
+          <th>Thời gian tạo</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let data of hospitals.data; trackBy: trackById">
+          <tr>
+            <td [(nzExpand)]="data.expand" (nzExpandChange)="onExpandChange(data)"></td>
+            <td>{{ data.code }}</td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.provinceCode }}</td>
+            <td>{{ data.districtCode }}</td>
+            <td>{{ data.wardCode }}</td>
+            <td>{{ data.address }}</td>
+            <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
+            <td>
+              <button nz-button nzType="default" (click)="onDelete(data.id)">Xoá</button>
+              <button nz-button nzType="default" (click)="onEdit(data.id)">Sửa</button>
+              <app-update-hospital *ngIf="selectedId === data.id" [isVisibleUpdateHospital]="isVisibleUpdateHospital"
+                (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-hospital>
+              <button nz-button nzType="default" (click)="onAddUser(data.id)">Thêm người dùng</button>
+              <app-add-user-hospital *ngIf="selectedIdAddUser === data.id" [isVisibleAddUserHospital]="isVisibleAddUserHospital"
+                (visibilityChange)="handleVisibilityAddUserChange($event)" [id]="data.id"></app-add-user-hospital>
+            </td>
+          </tr>
+          <tr *ngIf="data.expand">
+            <td colspan="9">
+              <nz-form-label [nzSpan]="6">Người dùng của bệnh viện {{data.name}}</nz-form-label>
+              <nz-table
+                #innerTable
+                [nzData]="data.userHospital"
+                nzSize="middle"
+                [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>UserName</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let user of data.userHospital; trackBy: trackById">
+                    <tr>
+                      <td>{{ user.id }}</td>
+                      <td>{{ user.userName }}</td>
+                      <td>{{ user.name }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </nz-table>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
 </div>
-
-<nz-table #nestedTable [nzData]="hospitals.data" [nzTotal]="pageSize * hospitals.totalPage" [nzPageIndex]="currentPage"
-  (nzPageIndexChange)="onPageChange($event)" [nzFrontPagination]="false" [nzTitle]="'Danh sách bệnh viện '">
-
-  <thead>
-    <tr>
-      <th></th>
-      <th>Mã</th>
-      <th>Tên</th>
-      <th>Mã tỉnh</th>
-      <th>Mã huyện</th>
-      <th>Mã xã</th>
-      <th>Địa chỉ</th>
-      <th>Thời gian tạo</th>
-      <th>Hành động</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let data of hospitals.data; trackBy: trackById">
-      <tr>
-        <td [(nzExpand)]="data.expand" (nzExpandChange)="onExpandChange(data)"></td>
-        <td>{{ data.code }}</td>
-        <td>{{ data.name }}</td>
-        <td>{{ data.provinceCode }}</td>
-        <td>{{ data.districtCode }}</td>
-        <td>{{ data.wardCode }}</td>
-        <td>{{ data.address }}</td>
-        <td>{{ data.creationTime | date: 'HH:mm:ss dd-MM-yyyy ' }}</td>
-        <td>
-          <button nz-button nzType="default" (click)="onDelete(data.id)">
-            Xoá
-          </button>
-          <button nz-button nzType="default" (click)="onEdit(data.id)">
-            Sửa
-          </button>
-          <app-update-hospital *ngIf="selectedId === data.id" [isVisibleUpdateHospital]="isVisibleUpdateHospital"
-            (visibilityChange)="handleVisibilityUpdateChange($event)" [id]="data.id"></app-update-hospital>
-          <button nz-button nzType="default" (click)="onAddUser(data.id)">
-            Thêm người dùng
-          </button>
-          <app-add-user-hospital *ngIf="selectedIdAddUser === data.id" [isVisibleAddUserHospital]="isVisibleAddUserHospital"
-            (visibilityChange)="handleVisibilityAddUserChange($event)" [id]="data.id"></app-add-user-hospital>
-        </td>
-      </tr>
-      <tr *ngIf="data.expand">
-        <td colspan="9">
-          <nz-table
-            #innerTable
-            [nzData]="data.userHospital"
-            nzSize="middle"
-            [nzShowPagination]="false"
-          >
-            <thead>
-              <tr>
-                <th>Id</th>
-                <th>UserName</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let user of data.userHospital; trackBy: trackById">
-                <tr>
-                  <td>{{ user.id }}</td>
-                  <td>{{ user.userName }}</td>            
-                <td>{{ user.Name }}</td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </nz-table>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</nz-table>

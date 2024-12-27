@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,7 +90,15 @@ public class ProvinceAppService(
     {
         if (file == null || file.Length == 0)
         {
-            return false;
+
+            throw new BusinessException()
+                .WithData("message", $"File không có gì");
+        }
+        var fileExtension = Path.GetExtension(file.FileName);
+        if (string.IsNullOrEmpty(fileExtension) || !fileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BusinessException()
+                .WithData("message", $"File phải có định dạng xlsx");
         }
 
         try

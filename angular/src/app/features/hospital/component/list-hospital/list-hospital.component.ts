@@ -122,7 +122,7 @@ export class ListHospitalComponent implements OnInit {
   onDelete(id: number) {
     this.hospitalService.delete(id).subscribe({
       next: response => {
-        this.notification.success('Thành công', `Xoá thành công ${response}`);
+        this.notification.success('Thành công', `Xoá thành công`);
         this.loadHospitals();
       },
       error: error => {

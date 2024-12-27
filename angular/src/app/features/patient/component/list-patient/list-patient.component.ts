@@ -83,7 +83,7 @@ export class ListPatientComponent implements OnInit {
   onDelete(id: number) {
     this.patientService.delete(id).subscribe({
       next: response => {
-        this.notification.success('Thành công', `Xoá thành công ${response}`);
+        this.notification.success('Thành công', `Xoá thành công `);
         this.loadPatients();
       },
       error: error => {

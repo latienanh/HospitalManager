@@ -127,7 +127,8 @@ export class ListDistrictComponent implements OnInit{
     this.districtService.delete(id).subscribe(
       {
         next:(response)=>{
-          this.notification.success('Thành công', `Xoá thành công ${response}`);
+          console.log(response)
+          this.notification.success('Thành công', `Xoá thành công `);
           this.loadDistricts(this.form.value.selectedValue);
         },
         error:(error)=>{

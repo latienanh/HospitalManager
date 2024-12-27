@@ -17,6 +17,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace HospitalManager.Services;
 [Authorize("Ward_Manager")]
@@ -102,7 +103,15 @@ public class WardAppService(
     {
         if (file == null || file.Length == 0)
         {
-            return false;
+
+            throw new BusinessException()
+                .WithData("message", $"File không có gì");
+        }
+        var fileExtension = Path.GetExtension(file.FileName);
+        if (string.IsNullOrEmpty(fileExtension) || !fileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BusinessException()
+                .WithData("message", $"File phải có định dạng xlsx");
         }
 
         try

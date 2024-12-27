@@ -24,6 +24,7 @@ using Volo.Abp.Emailing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.IO;
 
 namespace HospitalManager.Services;
 
@@ -98,9 +99,16 @@ public class DistrictAppService(IRepository<District, int> repository,
     {
         if (file == null || file.Length == 0)
         {
-            return false;
+       
+            throw new BusinessException()
+                .WithData("message", $"File không có gì");
         }
-
+        var fileExtension = Path.GetExtension(file.FileName);
+        if (string.IsNullOrEmpty(fileExtension) || !fileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BusinessException()
+                .WithData("message", $"File phải có định dạng xlsx");
+        }
         try
         {
             await using (var stream = file.OpenReadStream())

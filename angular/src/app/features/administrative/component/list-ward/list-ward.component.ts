@@ -163,7 +163,7 @@ export class ListWardComponent implements OnInit {
   onDelete(id: number) {
     this.wardService.delete(id).subscribe({
       next: response => {
-        this.notification.success('Thành công', `Xoá thành công ${response}`);
+        this.notification.success('Thành công', `Xoá thành công `);
         this.loadWards(this.form.value.selectedValueProvince,this.form.value.selectedValueDistrict);
       },
       error: error => {

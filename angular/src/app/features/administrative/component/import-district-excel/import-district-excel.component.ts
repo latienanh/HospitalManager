@@ -3,11 +3,12 @@ import { VisibleImport } from '../../models/visible';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DistrictService } from '@proxy/services';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ErrorResponse } from 'src/app/core/models/error-response.model';
 
 @Component({
   selector: 'app-import-district-excel',
   templateUrl: './import-district-excel.component.html',
-  styleUrl: './import-district-excel.component.scss'
+  styleUrl: './import-district-excel.component.scss',
 })
 export class ImportDistrictExcelComponent {
   @Input() isVisibleImportDistrict: VisibleImport;
@@ -18,7 +19,7 @@ export class ImportDistrictExcelComponent {
   constructor(
     private fb: FormBuilder,
     private districtService: DistrictService,
-    private notification: NzNotificationService,
+    private notification: NzNotificationService
   ) {
     this.districtImportForm = this.fb.group({
       isUpdate: [false],
@@ -48,19 +49,23 @@ export class ImportDistrictExcelComponent {
       const isUpdate = formValue.isUpdate;
       const formData = new FormData();
       formData.append('file', this.selectedFile, this.selectedFile.name);
-        
+
       this.districtService.importExcelByFileAndIsUpdate(formData, isUpdate).subscribe({
-        next: (response) => {
+        next: response => {
           console.log(response);
           this.notification.success('Thành công', 'Tệp đã được tải lên thành công');
           this.districtImportForm.reset();
           this.selectedFile = null;
           this.visibilityChange.emit({ importStatus: true, showImportForm: false });
         },
-        error: (err) => {
+        error: (err: ErrorResponse) => {
           console.error(err);
-          this.notification.error('Lỗi', 'Đã xảy ra lỗi khi tải lên tệp');
-        }
+          if (err.status == 403) {
+            this.notification.error('Lỗi', `${err.error.error.data.message}`);
+          } else {
+            this.notification.error('Lỗi', 'Đã xảy ra lỗi khi tải lên tệp');
+          }
+        },
       });
     } else {
       this.notification.error('Lỗi', 'Form không hợp lệ. Vui lòng điền đầy đủ thông tin bắt buộc.');

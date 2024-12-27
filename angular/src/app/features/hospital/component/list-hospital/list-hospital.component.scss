@@ -1,0 +1,17 @@
+/* Add margin to the buttons to space them out */
+.add-button {
+    margin-bottom: 10px;
+    margin-right: 20px;
+     /* Adjust this value for more or less space */
+  }
+  
+  /* Add margin to the table to separate it from the buttons */
+  .table-container {
+    margin-top: 20px; /* Adjust this value for more or less space */
+  }
+  
+  /* Optional: space out the buttons inside the table row */
+  .nz-table td button {
+    margin-right: 10px; /* Adjust the spacing between the buttons */
+  }
+  

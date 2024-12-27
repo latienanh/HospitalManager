@@ -97,7 +97,7 @@ export class ListProvinceComponent implements OnInit {
     this.provinceService.delete(id).subscribe(
       {
         next:(response)=>{
-          this.notification.success('Thành công', `Xoá thành công ${response}`);
+          this.notification.success('Thành công', `Xoá thành công `);
           this.loadProvinces();
         },
         error:(error)=>{
