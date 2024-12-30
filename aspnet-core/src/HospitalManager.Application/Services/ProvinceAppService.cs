@@ -18,13 +18,15 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace HospitalManager.Services;
 [Authorize("Province_Manager")]
 public class ProvinceAppService(
     IRepository<Province, int> repository,
     IProvinceDapperRepository provinceDapperRepository,
-    ExcelService excelService
+    ExcelService excelService,
+    IObjectMapper objectMapper
 )
     : CrudAppService<Province, ProvinceDto, int, PagedAndSortedResultRequestDto, CreateUpdateProvinceDto>(
         repository), IProvinceService
@@ -36,7 +38,7 @@ public class ProvinceAppService(
         string whereClause = "WHERE IsDeleted = FALSE";
         var provinces = await provinceDapperRepository.GetPagingAsync(request.Index, request.Size, whereClause);
         var totalPage = await provinceDapperRepository.GetCountAsync(request.Size, whereClause);
-        var mappedProvinces = ObjectMapper.Map<List<Province>, List<ProvinceDto>>(provinces);
+        var mappedProvinces = objectMapper.Map<List<Province>, List<ProvinceDto>>(provinces);
         var result = new GetPagingResponse<ProvinceDto>
         {
             Data = mappedProvinces,
