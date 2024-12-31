@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Core;
 using AutoMapper;
@@ -16,6 +18,8 @@ using HospitalManager.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NSubstitute;
+using OfficeOpenXml;
+using Volo.Abp;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
@@ -26,110 +30,182 @@ namespace HospitalManager.Service.Test
 {
     public class ProvinceServiceTests
     {
-        public Mock<IRepository<Province, int>> _mockProvinceRepository { get; }
-        public Mock<IProvinceDapperRepository> _mockProvinceDapperRepository { get; }
-        public Mock<ExcelService> _mockExcelService { get; }
-        public ProvinceAppService _provinceAppService { get; }
-
-        public Mock<IObjectMapper> _mockObjectMapper { get; }
+        private readonly Mock<IRepository<Province, int>> _repositoryMock;
+        private readonly Mock<IProvinceDapperRepository> _provinceDapperRepositoryMock;
+        private readonly Mock<ExcelService> _excelServiceMock;
+        private readonly Mock<IObjectMapper> _objectMapperMock;
+        private readonly ProvinceAppService _service;
 
         public ProvinceServiceTests()
         {
-            _mockProvinceRepository = new Mock<IRepository<Province, int>>();
-            _mockProvinceDapperRepository = new Mock<IProvinceDapperRepository>();
-            _mockExcelService = new Mock<ExcelService>();
-            _mockObjectMapper = new Mock<IObjectMapper>();
-
-            // Khởi tạo ProvinceAppService với các mock đã tạo
-            _provinceAppService = new ProvinceAppService(
-                _mockProvinceRepository.Object,
-                _mockProvinceDapperRepository.Object,
-                _mockExcelService.Object,
-                _mockObjectMapper.Object
+            _repositoryMock = new Mock<IRepository<Province, int>>();
+            _provinceDapperRepositoryMock = new Mock<IProvinceDapperRepository>();
+            _excelServiceMock = new Mock<ExcelService>();
+            _objectMapperMock = new Mock<IObjectMapper>();
+            _service = new ProvinceAppService(
+                _repositoryMock.Object,
+                _provinceDapperRepositoryMock.Object,
+                _excelServiceMock.Object,
+                _objectMapperMock.Object
             );
         }
+
         [Fact]
-        public async Task GetProvinceDapperListAsync_Should_Return_Provinces()
+        public async Task GetProvinceDapperListAsync_ReturnsPagedData()
         {
             // Arrange
-            var request = new BaseGetPagingRequest { Index = 1, Size = 10 };
-            var provinces = new List<Province> { new Province { Code = 1, Name = "Province1" } };
-            var mappedProvinces = new List<ProvinceDto> { new ProvinceDto { Code = 1, Name = "Province1" } };
+            var request = new BaseGetPagingRequest { Index = 0, Size = 1 };
+            var provinces = new List<Province> { new Province { Code = 1, Name = "Province A" } };
+            var totalPage = 1;
 
-            _mockProvinceDapperRepository.Setup(repo => repo.GetPagingAsync(request.Index, request.Size, It.IsAny<string>()))
+            _provinceDapperRepositoryMock.Setup(r => r.GetPagingAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(provinces);
-            _mockProvinceDapperRepository.Setup(repo => repo.GetCountAsync(request.Size, It.IsAny<string>()))
-                .ReturnsAsync(1);
-            _mockObjectMapper.Setup(mapper => mapper.Map<List<Province>, List<ProvinceDto>>(provinces))
-                .Returns(mappedProvinces);
+            _provinceDapperRepositoryMock.Setup(r => r.GetCountAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(totalPage);
+            _objectMapperMock.Setup(m => m.Map<List<Province>, List<ProvinceDto>>(It.IsAny<List<Province>>()))
+                .Returns(new List<ProvinceDto> { new ProvinceDto { Code = 1, Name = "Province A" } });
 
             // Act
-            var result = await _provinceAppService.GetProvinceDapperListAsync(request);
+            var result = await _service.GetProvinceDapperListAsync(request);
 
             // Assert
             Assert.Equal(1, result.TotalPage);
-            Assert.Equal(mappedProvinces, result.Data);
+            Assert.Single(result.Data);
+            Assert.Equal("Province A", result.Data.First().Name);
         }
+
         [Fact]
-        public async Task DeleteAsync_ShouldCallRepositoryDeleteAsync()
+        public async Task GetProvinceDapperListAsync_ReturnsEmptyData_WhenNoDataFound()
         {
             // Arrange
-            int id = 1;
+            var request = new BaseGetPagingRequest { Index = 1, Size = 10 };
+            var provinces = new List<Province>();
+            
+            var totalPage = 0;
 
+            _provinceDapperRepositoryMock.Setup(r => r.GetPagingAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(provinces);
+            _provinceDapperRepositoryMock.Setup(r => r.GetCountAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(totalPage);
+            _objectMapperMock.Setup(r => r.Map<Province,ProvinceDto>(provinces))
+                .ReturnsAsync(totalPage);
             // Act
-            await _provinceAppService.DeleteAsync(id);
+            var result = await _service.GetProvinceDapperListAsync(request);
 
             // Assert
-            _mockProvinceRepository.Verify(repo =>  repo.DeleteAsync(id), Times.Once);
+            Assert.Equal(0, result.TotalPage);
+            Assert.Equal(null,result.Data);
         }
-
         [Fact]
-        public async Task CreateAsync_ShouldCreateProvince()
+        public async Task CreateAsync_ThrowsBusinessException_WhenCodeAlreadyExists()
         {
             // Arrange
-            var createDto = new CreateUpdateProvinceDto { Code = 123, Name = "Province1" };
-            _mockProvinceRepository.Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Func<Province, bool>>()))
-                .ReturnsAsync((Province)null);
+            var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
+            _repositoryMock.Setup(r => r.FindAsync(x=>x.Code==input.Code,true,default))
+                .ReturnsAsync(new Province { Code = 123 });
 
-            // Act
-            var result = await _provinceAppService.CreateAsync(createDto);
-
-            // Assert
-            _mockProvinceRepository.Verify(repo => repo.InsertAsync(It.IsAny<Province>(), true), Times.Once);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _service.CreateAsync(input));
+            Assert.Equal("Mã: 123 đã tồn tại trong hệ thống", exception.Message);
         }
+
         [Fact]
-        public async Task UpdateAsync_ShouldUpdateProvince()
+        public async Task CreateAsync_CreatesProvinceSuccessfully_WhenCodeDoesNotExist()
         {
             // Arrange
-            int id = 1;
-            var updateDto = new CreateUpdateProvinceDto { Code = 123, Name = "Province1" };
-            _mockProvinceRepository.Setup(repo => repo.FirstOrDefaultAsync(It.IsAny<Func<Province, bool>>()))
-                .ReturnsAsync((Province)null);
-
+            var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
+            _repositoryMock.Setup(r => r.FindAsync(It.IsAny<Expression<Func<Province, bool>>>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Province)null); // No existing province with this code
+            _repositoryMock.Setup(r => r.InsertAsync(It.IsAny<Province>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).Returns((Task<Province>)Task.CompletedTask);
+         
             // Act
-            var result = await _provinceAppService.UpdateAsync(id, updateDto);
+            var result = await _service.CreateAsync(input);
 
             // Assert
-            _mockProvinceRepository.Verify(repo => repo.UpdateAsync(It.IsAny<Province>(), true), Times.Once);
+            _repositoryMock.Verify(r => r.InsertAsync(It.IsAny<Province>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
+            Assert.Equal(123, result.Code);
+            Assert.Equal("Province A", result.Name);
         }
         [Fact]
-        public async Task ImportExcel_ShouldReturnTrue()
+        public async Task UpdateAsync_ThrowsBusinessException_WhenCodeAlreadyExists()
+        {
+            // Arrange
+            var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
+            var existingProvince = new Province { Code = 124, Name = "Province B" };
+            _repositoryMock.Setup(r => r.FindAsync(It.IsAny<Expression<Func<Province, bool>>>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingProvince);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _service.UpdateAsync(1, input));
+            Assert.Equal("Mã: 123 đã tồn tại trong hệ thống", exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_UpdatesProvinceSuccessfully_WhenCodeDoesNotExist()
+        {
+            // Arrange
+            var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
+            var existingProvince = new Province { Code = 124, Name = "Province B" };
+
+            _repositoryMock.Setup(r => r.FindAsync(It.IsAny<Expression<Func<Province, bool>>>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Province)null); // No existing province with this code
+
+            _repositoryMock.Setup(r => r.UpdateAsync(It.IsAny<Province>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns((Task<Province>)Task.CompletedTask);
+
+            // Act
+            var result = await _service.UpdateAsync(1, input);
+
+            // Assert
+            _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Province>(), It.IsAny<bool>(),It.IsAny<CancellationToken>()), Times.Once);
+            Assert.Equal(123, result.Code);
+            Assert.Equal("Province A", result.Name);
+
+        }
+        [Fact]
+        public async Task DeleteAsync_DeletesProvinceSuccessfully()
+        {
+            // Arrange
+            var provinceId = 1;
+            _repositoryMock.Setup(r => r.DeleteAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _service.DeleteAsync(provinceId);
+
+            // Assert
+            _repositoryMock.Verify(r => r.DeleteAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ImportExcel_ThrowsBusinessException_WhenFileHasInvalidExtension()
         {
             // Arrange
             var fileMock = new Mock<IFormFile>();
-            var content = "Fake file content";
-            var fileName = "test.xlsx";
-            var ms = new MemoryStream(Encoding.UTF8.GetBytes(content));
-            ms.Position = 0;
-            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-            fileMock.Setup(_ => _.FileName).Returns(fileName);
-            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            fileMock.Setup(f => f.FileName).Returns("invalid.txt");
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _service.ImportExcel(fileMock.Object, true));
+            Assert.Equal("File phải có định dạng xlsx", exception.Message);
+        }
+
+        [Fact]
+        public async Task ImportExcel_ImportsDataSuccessfully_WhenFileIsValid()
+        {
+            // Arrange
+            var fileMock = new Mock<IFormFile>();
+            fileMock.Setup(f => f.FileName).Returns("provinces.xlsx");
+            var fileStream = new MemoryStream();
+            fileMock.Setup(f => f.OpenReadStream()).Returns(fileStream);
+
+            _excelServiceMock.Setup(s => s.ImportExcelFileAsync<Province>(It.IsAny<Stream>(), It.IsAny<bool>(), It.IsAny<Func<ExcelWorksheet, int, Province>>(), It.IsAny<Func<int, Task<Province>>>(), It.IsAny<Func<IEnumerable<Province>, Task>>(), It.IsAny<Func<IEnumerable<Province>, Task>>(), It.IsAny<Func<Province, ExcelWorksheet, int, Province>>()))
+                .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _provinceAppService.ImportExcel(fileMock.Object, false);
+            var result = await _service.ImportExcel(fileMock.Object, true);
 
             // Assert
             Assert.True(result);
+            _excelServiceMock.Verify(s => s.ImportExcelFileAsync<Province>(It.IsAny<Stream>(), It.IsAny<bool>(), It.IsAny<Func<ExcelWorksheet, int, Province>>(), It.IsAny<Func<int, Task<Province>>>(), It.IsAny<Func<IEnumerable<Province>, Task>>(), It.IsAny<Func<IEnumerable<Province>, Task>>(), It.IsAny<Func<Province, ExcelWorksheet, int, Province>>()), Times.Once);
         }
     }
 }

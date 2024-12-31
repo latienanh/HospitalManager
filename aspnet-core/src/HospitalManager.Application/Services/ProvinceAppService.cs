@@ -54,7 +54,10 @@ public class ProvinceAppService(
     [Authorize("Province_Create")]
     public override async Task<ProvinceDto> CreateAsync(CreateUpdateProvinceDto input)
     {
-        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+        var a = new List<Province>();
+        var checkCode = await Repository.FindAsync(x => x.Code == input.Code);
+        //var checkCod2e = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code);
+        //var checkCod3e = await Repository.GetAsync(x => x.Code == input.Code);
         if (checkCode != null)
         {
             throw new BusinessException()
@@ -66,7 +69,7 @@ public class ProvinceAppService(
     [Authorize("Province_Update")]
     public override async Task<ProvinceDto> UpdateAsync(int id, CreateUpdateProvinceDto input)
     {
-        var checkCode = await Repository.FirstOrDefaultAsync(x => x.Code == input.Code && x.Id != id);
+        var checkCode = await Repository.FindAsync(x => x.Code == input.Code && x.Id != id);
         if (checkCode != null)
         {
             throw new BusinessException()
@@ -120,7 +123,7 @@ public class ProvinceAppService(
                     },
                     findExistingEntity: async code =>
                     {
-                        return await repository.FirstOrDefaultAsync(x => x.Code == code);
+                        return await repository.FindAsync(x => x.Code == code);
                     },
                     insertEntity: async (IEnumerable<Province> provincesAdd) =>
                     {
