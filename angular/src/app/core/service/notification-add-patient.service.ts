@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class NotificationAddPatientService {
 
   constructor(private notification: NzNotificationService) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`https://localhost:44348/notificationHub`, {
+      .withUrl(`https://${environment.apis.default.url}/notificationHub`, {
         accessTokenFactory: () => this.oAuthService.getAccessToken(),
       })
       .build();
