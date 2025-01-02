@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using OfficeOpenXml;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using Xunit;
@@ -27,36 +29,20 @@ namespace HospitalManager.Service.Test
         private readonly Mock<IProvinceDapperRepository> _provinceDapperRepositoryMock;
         private readonly Mock<ExcelService> _excelServiceMock;
         private readonly Mock<IObjectMapper> _objectMapperMock;
-        private readonly ProvinceAppService _service;
-
+        private readonly ProvinceServiceCustom _service;
+        
         public ProvinceServiceTests()
         {
             _repositoryMock = new Mock<IRepository<Province, int>>();
             _provinceDapperRepositoryMock = new Mock<IProvinceDapperRepository>();
             _excelServiceMock = new Mock<ExcelService>();
             _objectMapperMock = new Mock<IObjectMapper>();
-            _service = new ProvinceAppService(
+            _service = new ProvinceServiceCustom(
                 _repositoryMock.Object,
                 _provinceDapperRepositoryMock.Object,
                 _excelServiceMock.Object,
                 _objectMapperMock.Object
             );
-        }
-        private class TestProvinceAppService : ProvinceAppService
-        {
-            public TestProvinceAppService(
-                IRepository<Province, int> repository,
-                IProvinceDapperRepository provinceDapperRepository,
-                ExcelService excelService,
-                IObjectMapper objectMapper
-            ) : base(repository, provinceDapperRepository, excelService, objectMapper)
-            {
-            }
-
-            public override Task<ProvinceDto> CreateAsync(CreateUpdateProvinceDto input)
-            {
-                return base.CreateAsync(input);
-            }
         }
         [Fact]
         public async Task GetProvinceDapperListAsync_ReturnsPagedData()
@@ -64,7 +50,7 @@ namespace HospitalManager.Service.Test
             // Arrange
             var request = new BaseGetPagingRequest { Index = 0, Size = 1 };
             var provinces = new List<Province> { new Province { Code = 1, Name = "Province A" } };
-            var totalPage = 1;
+            var totalPage = (int)Math.Ceiling((decimal)provinces.Count/request.Size);
 
             _provinceDapperRepositoryMock.Setup(r => r.GetPagingAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(provinces);
@@ -81,7 +67,26 @@ namespace HospitalManager.Service.Test
             Assert.Single(result.Data);
             Assert.Equal("Province A", result.Data.First().Name);
         }
+        [Fact]
+        public async Task GetProvinceById_ReturnsProvince()
+        {
+            // Arrange
+            var provinceId = 1;
+            var province = new Province { Code = 1, Name = "Province A" };
 
+            _repositoryMock.Setup(x => x.GetAsync(provinceId,It.IsAny<bool>(),It.IsAny<CancellationToken>())).ReturnsAsync(province);
+
+            _objectMapperMock.Setup(m => m.Map<Province, ProvinceDto>(It.IsAny<Province>()))
+                .Returns(new ProvinceDto { Code = 1, Name = "Province A" });
+
+            // Act
+            var result = await _service.GetAsync(provinceId);
+
+            // Assert
+            Assert.NotNull(result); 
+            Assert.Equal("Province A", result.Name);
+            Assert.Equal(1, result.Code); 
+        }
         [Fact]
         public async Task CreateAsync_ThrowsBusinessException_WhenCodeAlreadyExists()
         {
@@ -98,36 +103,28 @@ namespace HospitalManager.Service.Test
         public async Task CreateAsync_CreatesProvinceSuccessfully_WhenCodeDoesNotExist()
         {
             // Arrange
-            var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
+             var input = new CreateUpdateProvinceDto { Code = 123, Name = "Province A" };
             var entity = new Province {  Code = 123, Name = "Province A" };
-            var outputDto = new ProvinceDto {  Code = 123, Name = "Province A" };
+            var entityDto = new ProvinceDto { Code = 123, Name = "Province A" };
 
             _repositoryMock.Setup(r => r.FindAsync(It.IsAny<Expression<Func<Province, bool>>>(), true, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Province)null);
 
             _objectMapperMock.Setup(m => m.Map<CreateUpdateProvinceDto, Province>(input))
                 .Returns(entity);
-
+            _objectMapperMock.Setup(m => m.Map<Province, ProvinceDto>(entity))
+                .Returns(entityDto);
             _repositoryMock.Setup(r => r.InsertAsync(It.IsAny<Province>(), true, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(entity);
 
-            _objectMapperMock.Setup(m => m.Map<Province, ProvinceDto>(entity))
-                .Returns(outputDto);
-            var service = new TestProvinceAppService(
-                _repositoryMock.Object,
-                _provinceDapperRepositoryMock.Object,
-                _excelServiceMock.Object,
-                _objectMapperMock.Object
-            );
             // Act
-            var result = await service.CreateAsync(input);
+            var result = await _service.CreateAsync(input);
 
             // Assert
             _repositoryMock.Verify(r => r.InsertAsync(It.IsAny<Province>(), true, It.IsAny<CancellationToken>()), Times.Once);
             Assert.Equal(123, result.Code);
             Assert.Equal("Province A", result.Name);
         }
-
 
 
         [Fact]
@@ -187,6 +184,17 @@ namespace HospitalManager.Service.Test
             // Assert
             _repositoryMock.Verify(r => r.DeleteAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
         }
+        [Fact]
+        public async Task ImportExcel_ThrowsBusinessException_WhenFileIsEmpty()
+        {
+            // Arrange
+            var fileMock = new Mock<IFormFile>();
+            fileMock.Setup(f => f.Length).Returns(0);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _service.ImportExcel(fileMock.Object, true));
+            Assert.Contains("File không có gì", exception.Data["message"].ToString());
+        }
 
         [Fact]
         public async Task ImportExcel_ThrowsBusinessException_WhenFileHasInvalidExtension()
@@ -194,11 +202,13 @@ namespace HospitalManager.Service.Test
             // Arrange
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.FileName).Returns("invalid.txt");
+            fileMock.Setup(f => f.Length).Returns(100); // Ensure file has some length
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<BusinessException>(() => _service.ImportExcel(fileMock.Object, true));
             Assert.Contains("File phải có định dạng xlsx", exception.Data["message"].ToString());
         }
+
 
         [Fact]
         public async Task ImportExcel_ImportsDataSuccessfully_WhenFileIsValid()

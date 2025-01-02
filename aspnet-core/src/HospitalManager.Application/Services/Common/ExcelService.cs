@@ -70,7 +70,7 @@ public class ExcelService : IScopedDependency
         }
     }
 
-    public async Task ImportExcelFileAsync<T>(
+    public virtual async Task ImportExcelFileAsync<T>(
         Stream fileStream,
         bool isUpdate,
         Func<ExcelWorksheet,int, T> mapRowToEntity,

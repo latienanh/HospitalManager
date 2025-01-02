@@ -65,6 +65,7 @@ public class ProvinceAppService(
         }
 
         return await base.CreateAsync(input);
+
     }
     [Authorize("Province_Update")]
     public override async Task<ProvinceDto> UpdateAsync(int id, CreateUpdateProvinceDto input)
